@@ -166,5 +166,5 @@ jobs:
           if [ -n "$files" ]; then gh release upload deploy $files --clobber; fi
           gh release upload deploy work/upload/manifest.json --clobber
           while read -r asset; do
-            [ -n "$asset" ] && gh release delete-asset deploy "$asset" --yes
+            if [ -n "$asset" ]; then gh release delete-asset deploy "$asset" --yes; fi
           done < work/stale.txt

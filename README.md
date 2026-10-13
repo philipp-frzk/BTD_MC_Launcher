@@ -97,7 +97,7 @@ So a change is live after the workflow finishes **and** the Pi's deploy script h
 3. **On the Pi**, add to the website's `.env`:
 
    ```
-   MINECRAFT_DEPLOY_REPO=philipp-frzk/BTD_MC_Vanilla_Launcher
+   MINECRAFT_DEPLOY_REPO=philipp-frzk/BTD_MC_Launcher
    MINECRAFT_DEPLOY_TOKEN=github_pat_...
    ```
 

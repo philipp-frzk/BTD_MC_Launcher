@@ -62,7 +62,7 @@ fs.writeFileSync(path.join(uploadDir, 'manifest.json'), JSON.stringify(manifest,
 
 const listed = new Set(manifest.files.map(f => f.asset))
 const stale = current.files.map(f => f.asset).filter(a => !listed.has(a))
-fs.writeFileSync(path.join(work, 'stale.txt'), stale.join('\n') + '\n')
+fs.writeFileSync(path.join(work, 'stale.txt'), stale.map(a => `${a}\n`).join(''))
 
 console.log(`Launcher ${launcherVersion ?? '(none)'}, ${manifest.files.length} files:`)
 for(const f of manifest.files){
