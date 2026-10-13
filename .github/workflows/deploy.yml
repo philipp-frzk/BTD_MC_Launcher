@@ -84,6 +84,7 @@ jobs:
         id: compare
         if: steps.pack.outputs.found == 'true'
         run: |
+          mkdir -p current
           [ -f current/distribution.json ] || echo '{}' > current/distribution.json
           # The server entry's "version" is the build date, so it is ignored.
           changed=$(node -e "
