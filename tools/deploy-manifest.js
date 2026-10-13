@@ -6,13 +6,13 @@
  * Reads from <work dir>:
  *   current/manifest.json   manifest of the release (missing on the first run)
  *   launcher/               new launcher build: .exe, .exe.blockmap, latest.yml (optional)
- *   distro/                 new server list: distribution.json, versions/*.json (optional)
+ *   distro/                 new server list: distribution.json, versions/*.json, files/** (optional)
  * Writes:
  *   upload/                 new and changed assets plus manifest.json
  *   stale.txt               release assets that are no longer listed (to delete)
  *
- * The manifest lists the files in the order the Pi must write them: the Fabric version file before
- * distribution.json, the installer before latest.yml.
+ * The manifest lists the files in the order the Pi must write them: the Fabric version file and the
+ * override files before distribution.json, the installer before latest.yml.
  */
 const crypto = require('crypto')
 const fs = require('fs')
@@ -25,12 +25,26 @@ fs.mkdirSync(uploadDir, { recursive: true })
 const currentPath = path.join(work, 'current', 'manifest.json')
 const current = fs.existsSync(currentPath) ? JSON.parse(fs.readFileSync(currentPath, 'utf8')) : { files: [] }
 
-/** Stage a file for upload and return its manifest entry. Assets are flat, so the name comes from the target path. */
+/**
+ * Stage a file for upload and return its manifest entry. Assets are flat, so the name comes from the target path;
+ * files/ (modpack overrides) can repeat names in different folders, so those are named by content hash.
+ */
 function stage(source, target){
     const buf = fs.readFileSync(source)
-    const asset = path.basename(target)
+    const sha256 = crypto.createHash('sha256').update(buf).digest('hex')
+    const asset = target.startsWith('files/') ? `file-${sha256.slice(0, 16)}` : path.basename(target)
     fs.writeFileSync(path.join(uploadDir, asset), buf)
-    return { asset, path: target, size: buf.length, sha256: crypto.createHash('sha256').update(buf).digest('hex') }
+    return { asset, path: target, size: buf.length, sha256 }
+}
+
+/** Every file under dir, as paths relative to it with forward slashes. */
+function listFiles(dir, prefix = ''){
+    if(!fs.existsSync(dir)){
+        return []
+    }
+    return fs.readdirSync(dir, { withFileTypes: true }).flatMap(d => d.isDirectory()
+        ? listFiles(path.join(dir, d.name), `${prefix}${d.name}/`)
+        : [`${prefix}${d.name}`])
 }
 
 let distroFiles = current.files.filter(f => !f.path.startsWith('launcher/'))
@@ -39,9 +53,9 @@ let launcherVersion = current.launcherVersion ?? null
 
 const distroDir = path.join(work, 'distro')
 if(fs.existsSync(distroDir)){
-    const versionsDir = path.join(distroDir, 'versions')
     distroFiles = [
-        ...fs.readdirSync(versionsDir).map(f => stage(path.join(versionsDir, f), `versions/${f}`)),
+        ...listFiles(path.join(distroDir, 'versions'), 'versions/').map(f => stage(path.join(distroDir, f), f)),
+        ...listFiles(path.join(distroDir, 'files'), 'files/').map(f => stage(path.join(distroDir, f), f)),
         stage(path.join(distroDir, 'distribution.json'), 'distribution.json')
     ]
 }

@@ -9,6 +9,7 @@ const os                    = require('os')
 const path                  = require('path')
 
 const ConfigManager            = require('./configmanager')
+const { ensureServerListed }   = require('./serverlist')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
@@ -46,6 +47,7 @@ class ProcessBuilder {
      */
     build(){
         fs.ensureDirSync(this.gameDir)
+        this.addToServerList()
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
@@ -108,6 +110,23 @@ class ProcessBuilder {
         })
 
         return child
+    }
+
+    /**
+     * Make sure the server shows up in the in-game multiplayer list. Never blocks the launch.
+     */
+    addToServerList(){
+        const { name, address } = this.server.rawServer
+        if(!address){
+            return
+        }
+        try {
+            if(ensureServerListed(this.gameDir, name, address)){
+                logger.info(`Added ${address} to servers.dat.`)
+            }
+        } catch (err) {
+            logger.warn('Could not update servers.dat', err)
+        }
     }
 
     /**

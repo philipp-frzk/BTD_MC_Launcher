@@ -5,11 +5,13 @@
  *   npm run distro "C:\path\to\pack.mrpack"
  *
  * Server details (address, name, description, paidUntil) come from distro/config.json.
- * Minecraft version, Fabric Loader version and the mods come from the modpack.
+ * Minecraft version, Fabric Loader version, the mods, the other Modrinth files (shaderpacks, resourcepacks) and the
+ * overrides (config/, servers.dat, ... - but not options.txt) come from the modpack.
  *
  * Output, to upload to `baseUrl` on the web server:
  *   distro/output/distribution.json
  *   distro/output/versions/<fabric-profile-id>.json
+ *   distro/output/files/...            (the modpack's overrides)
  */
 const AdmZip = require('adm-zip')
 const { spawn, spawnSync } = require('child_process')
@@ -135,22 +137,33 @@ async function buildFabricModule(mcVersion, loaderVersion, baseUrl){
     return loaderModule
 }
 
-/** The modpack's client mods as launcher modules, named via Modrinth where possible. */
-async function buildModModules(packFiles){
-    const mods = packFiles.filter(f => f.path.startsWith('mods/'))
-    for(const f of mods.filter(f => f.env?.client === 'unsupported')){
+/** The modpack's client-side files; server-only ones are reported and dropped. */
+function clientFiles(packFiles){
+    for(const f of packFiles.filter(f => f.env?.client === 'unsupported')){
         warnings.push(`${path.basename(f.path)} is server-only and was left out (install it on the server).`)
     }
-    const clientMods = mods.filter(f => f.env?.client !== 'unsupported')
+    return packFiles.filter(f => f.env?.client !== 'unsupported')
+}
 
+/** Modrinth versions (by sha1) and projects (by id) for the given pack files. */
+async function lookupModrinth(files){
+    if(files.length === 0){
+        return { versions: {}, projectById: {} }
+    }
     const versions = await (await fetchOk(`${MODRINTH_API}/version_files`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hashes: clientMods.map(f => f.hashes.sha1), algorithm: 'sha1' })
+        body: JSON.stringify({ hashes: files.map(f => f.hashes.sha1), algorithm: 'sha1' })
     })).json()
     const projectIds = [...new Set(Object.values(versions).map(v => v.project_id))]
     const projects = await (await fetchOk(`${MODRINTH_API}/projects?ids=${encodeURIComponent(JSON.stringify(projectIds))}`)).json()
-    const projectById = Object.fromEntries(projects.map(p => [p.id, p]))
+    return { versions, projectById: Object.fromEntries(projects.map(p => [p.id, p])) }
+}
+
+/** The modpack's client mods as launcher modules, named via Modrinth where possible. */
+async function buildModModules(packFiles){
+    const clientMods = clientFiles(packFiles.filter(f => f.path.startsWith('mods/')))
+    const { versions, projectById } = await lookupModrinth(clientMods)
 
     const modules = []
     for(const file of clientMods){
@@ -172,6 +185,82 @@ async function buildModModules(packFiles){
         console.log(`  ${(project ? project.title : fileName).padEnd(36)} ${versionNumber}`)
     }
     return modules
+}
+
+/** The modpack's other Modrinth files (shaderpacks, resourcepacks, ...), placed in the server's instance folder. */
+async function buildPackFileModules(packFiles){
+    const files = clientFiles(packFiles.filter(f => !f.path.startsWith('mods/')))
+    const { versions, projectById } = await lookupModrinth(files)
+
+    const modules = []
+    for(const file of files){
+        const artifact = await artifactFor(file.downloads[0])
+        if(artifact.size !== file.fileSize){
+            throw new Error(`Size mismatch while downloading ${file.downloads[0]}`)
+        }
+        const version = versions[file.hashes.sha1]
+        const project = version ? projectById[version.project_id] : null
+        modules.push({
+            id: file.path,
+            name: project ? `${project.title} (${version.version_number})` : path.basename(file.path),
+            type: 'File',
+            artifact: { ...artifact, path: file.path }
+        })
+        console.log(`  ${file.path}`)
+    }
+    return modules
+}
+
+/**
+ * The modpack's override files (config/, servers.dat, ...), copied to distro/output/files/ to be hosted next to
+ * distribution.json. client-overrides/ wins over overrides/. options.txt is left out so players keep their own settings.
+ */
+function buildOverrideModules(zip, baseUrl){
+    const byPath = new Map()
+    for(const prefix of ['overrides/', 'client-overrides/']){
+        for(const entry of zip.getEntries()){
+            if(entry.isDirectory || !entry.entryName.startsWith(prefix)){
+                continue
+            }
+            const relPath = entry.entryName.slice(prefix.length)
+            if(relPath.split('/').some(part => part === '..' || part === '')){
+                throw new Error(`Unsafe path in the modpack: ${entry.entryName}`)
+            }
+            byPath.set(relPath, entry)
+        }
+    }
+    byPath.delete('options.txt')
+
+    const modules = []
+    for(const [relPath, entry] of [...byPath].sort(([a], [b]) => a.localeCompare(b))){
+        const buf = entry.getData()
+        const outFile = path.join(OUTPUT_DIR, 'files', ...relPath.split('/'))
+        fs.mkdirSync(path.dirname(outFile), { recursive: true })
+        fs.writeFileSync(outFile, buf)
+        modules.push({
+            id: relPath,
+            name: relPath,
+            type: 'File',
+            artifact: {
+                size: buf.length,
+                MD5: crypto.createHash('md5').update(buf).digest('hex'),
+                path: relPath,
+                url: new URL(`files/${relPath.split('/').map(encodeURIComponent).join('/')}`, baseUrl).href
+            }
+        })
+        console.log(`  ${relPath}`)
+    }
+    return modules
+}
+
+/** Every file under dir, as paths relative to it with forward slashes. */
+function listFiles(dir, prefix = ''){
+    if(!fs.existsSync(dir)){
+        return []
+    }
+    return fs.readdirSync(dir, { withFileTypes: true }).flatMap(d => d.isDirectory()
+        ? listFiles(path.join(dir, d.name), `${prefix}${d.name}/`)
+        : [`${prefix}${d.name}`])
 }
 
 /** Prints whether the Minecraft server answers at its address (never fails the run). */
@@ -196,7 +285,8 @@ async function main(){
     if(packPath == null){
         throw new Error('No modpack selected.')
     }
-    const index = JSON.parse(new AdmZip(packPath).readAsText('modrinth.index.json'))
+    const zip = new AdmZip(packPath)
+    const index = JSON.parse(zip.readAsText('modrinth.index.json'))
     const mcVersion = index.dependencies?.minecraft
     const loaderVersion = index.dependencies?.['fabric-loader']
     if(!mcVersion || !loaderVersion){
@@ -209,6 +299,8 @@ async function main(){
 
     const fabricModule = await buildFabricModule(mcVersion, loaderVersion, baseUrl)
     const modModules = await buildModModules(index.files)
+    console.log('\nFiles:')
+    const fileModules = [...await buildPackFileModules(index.files), ...buildOverrideModules(zip, baseUrl)]
     const javaOptions = await javaOptionsFor(mcVersion)
 
     const serverEntry = {
@@ -228,17 +320,17 @@ async function main(){
     if(javaOptions){
         serverEntry.javaOptions = javaOptions
     }
-    serverEntry.modules = [fabricModule, ...modModules]
+    serverEntry.modules = [fabricModule, ...modModules, ...fileModules]
     fs.writeFileSync(path.join(OUTPUT_DIR, 'distribution.json'), JSON.stringify({ version: '1.0.0', servers: [serverEntry] }, null, 4) + '\n')
 
-    console.log(`\n${modModules.length} mods, Java ${javaOptions?.suggestedMajor ?? '(launcher default)'}.`)
+    console.log(`\n${modModules.length} mods, ${fileModules.length} files, Java ${javaOptions?.suggestedMajor ?? '(launcher default)'}.`)
     await reportServerStatus(server.address)
     for(const w of warnings){
         console.warn(`WARNING: ${w}`)
     }
 
     console.log('\nUpload these files from distro/output/ to your web server (keep the folders):')
-    for(const file of ['distribution.json', ...fs.readdirSync(path.join(OUTPUT_DIR, 'versions')).map(f => `versions/${f}`)]){
+    for(const file of ['distribution.json', ...listFiles(path.join(OUTPUT_DIR, 'versions'), 'versions/'), ...listFiles(path.join(OUTPUT_DIR, 'files'), 'files/')]){
         console.log(`  ${file.padEnd(48)} -> ${new URL(file, baseUrl).href}`)
     }
     if(process.platform === 'win32'){
