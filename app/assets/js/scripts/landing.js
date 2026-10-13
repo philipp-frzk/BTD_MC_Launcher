@@ -96,11 +96,41 @@ function setDownloadPercentage(percent){
  */
 function setLaunchEnabled(val){
     // A pending launcher update keeps the button usable as the update button.
-    document.getElementById('launch_button').disabled = !val && launcherUpdateInfo == null
+    document.getElementById('launch_button').disabled = gameState != null || (!val && launcherUpdateInfo == null)
+}
+
+const launchButtonDefaultHTML = document.getElementById('launch_button').innerHTML
+
+/**
+ * Show on the play button that the game is starting or running.
+ *
+ * @param {'launching' | 'playing' | null} state The game's state, null once it has closed.
+ */
+function setGameState(state){
+    gameState = state
+    const launchButton = document.getElementById('launch_button')
+    if(state == null){
+        launchButton.removeAttribute('state')
+        launchButton.disabled = false
+        if(launcherUpdateInfo != null){
+            showUpdateUI(launcherUpdateInfo)
+        } else {
+            launchButton.innerHTML = launchButtonDefaultHTML
+        }
+        return
+    }
+    launchButton.removeAttribute('update')
+    launchButton.setAttribute('state', state)
+    launchButton.disabled = true
+    const icon = state === 'launching' ? '<span class="launchButtonStateIcon"></span>' : ''
+    launchButton.innerHTML = `${icon}${Lang.queryJS(`landing.launch.${state}Button`)}`
 }
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
+    if(gameState != null){
+        return
+    }
     if(launcherUpdateInfo != null){
         loggerLanding.info('Installing launcher update', launcherUpdateInfo.version)
         installLauncherUpdate()
@@ -543,7 +573,6 @@ let hasRPC = false
 // Change this if your server uses something different.
 const GAME_JOINED_REGEX = /\[.+\]: Sound engine started/
 const GAME_LAUNCH_REGEX = /^\[.+\]: (?:MinecraftForge .+ Initialized|ModLauncher .+ starting: .+|Loading Minecraft .+ with Fabric Loader .+)$/
-const MIN_LINGER = 5000
 
 async function dlAsync(login = true) {
 
@@ -661,7 +690,7 @@ async function dlAsync(login = true) {
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
 
         const onLoadComplete = () => {
-            toggleLaunchArea(false)
+            setGameState('playing')
             if(hasRPC){
                 DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
                 proc.stdout.on('data', gameStateChange)
@@ -669,20 +698,13 @@ async function dlAsync(login = true) {
             proc.stdout.removeListener('data', tempListener)
             proc.stderr.removeListener('data', gameErrorListener)
         }
-        const start = Date.now()
 
         // Attach a temporary listener to the client output.
         // Will wait for a certain bit of text meaning that
-        // the client application has started, and we can hide
-        // the progress bar stuff.
+        // the client application has started.
         const tempListener = function(data){
-            if(GAME_LAUNCH_REGEX.test(data.trim())){
-                const diff = Date.now()-start
-                if(diff < MIN_LINGER) {
-                    setTimeout(onLoadComplete, MIN_LINGER-diff)
-                } else {
-                    onLoadComplete()
-                }
+            if(data.split('\n').some(line => GAME_LAUNCH_REGEX.test(line.trim()))){
+                onLoadComplete()
             }
         }
 
@@ -707,6 +729,11 @@ async function dlAsync(login = true) {
         try {
             // Build Minecraft process.
             proc = pb.build()
+
+            // The play button shows the game's state until it closes.
+            toggleLaunchArea(false)
+            setGameState('launching')
+            proc.on('close', () => setGameState(null))
 
             // Bind listeners to stdout.
             proc.stdout.on('data', tempListener)

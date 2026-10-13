@@ -157,6 +157,8 @@ pleaseWait = "Please wait.."
 failureTitle = "Error During Launch"
 failureText = "See console (CTRL + Shift + i) for more details."
 okay = "Okay"
+launchingButton = "LAUNCHING…"
+playingButton = "PLAYING"
 
 [js.landing.selectedAccount]
 noAccountSelected = "No Account Selected"

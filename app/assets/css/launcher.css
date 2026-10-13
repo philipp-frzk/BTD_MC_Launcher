@@ -4951,6 +4951,28 @@ input:checked + .toggleSwitchSlider:before {
 .launchButtonIcon {
     flex-shrink: 0;
 }
+/* Play button while the game starts (with a spinner) and runs: greyed out. */
+#landingHero #launch_button[state] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+.launchButtonStateIcon {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    border-top-color: var(--text-secondary);
+    animation: launchButtonSpin .8s linear infinite;
+}
+@keyframes launchButtonSpin {
+    to { transform: rotate(360deg); }
+}
 /* Title/tagline come from the server list: spread long names evenly over two lines. */
 #landingTitle,
 #landingTagline {

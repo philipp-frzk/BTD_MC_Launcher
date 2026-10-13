@@ -14,6 +14,9 @@ const TAG_STRING   = 8
 const TAG_LIST     = 9
 const TAG_COMPOUND = 10
 
+/** The name Minecraft gives a server it saves on its own. */
+const DEFAULT_NAME = 'BTD Server'
+
 /** Byte length of the fixed-size and array tags' payloads at `offset`. */
 const RAW_SIZE = {
     1: () => 1,
@@ -122,7 +125,8 @@ function normalizeAddress(address){
 }
 
 /**
- * Adds the server to servers.dat in gameDir (at the top) unless an entry with its address is already there.
+ * Adds the server to servers.dat in gameDir (at the top) unless a visible entry with its address is already there.
+ * A hidden entry for it is made visible and moved to the top instead.
  *
  * @param {string} gameDir The server's instance directory.
  * @param {string} name The name shown in the server list.
@@ -159,19 +163,33 @@ exports.ensureServerListed = function(gameDir, name, address){
     }
 
     const target = normalizeAddress(address)
-    const listed = list.items.some(entries => {
+    const existing = list.items.find(entries => {
         const ip = entries.find(e => e.name === 'ip' && e.type === TAG_STRING)
         return ip != null && normalizeAddress(decodeString(ip.value)) === target
     })
-    if(listed){
-        return false
+    if(existing != null){
+        // Joining a server directly (as autoconnect does) makes Minecraft save it as a hidden
+        // "Minecraft Server" entry, which the multiplayer screen doesn't show. Make that one visible.
+        const hidden = existing.find(e => e.name === 'hidden' && e.type === TAG_BYTE)
+        if(hidden == null || hidden.value[0] === 0){
+            return false
+        }
+        hidden.value = Buffer.from([0])
+        const nameTag = existing.find(e => e.name === 'name' && e.type === TAG_STRING)
+        if(nameTag == null){
+            existing.push({ type: TAG_STRING, name: 'name', value: encodeString(name) })
+        } else if(decodeString(nameTag.value) === DEFAULT_NAME){
+            nameTag.value = encodeString(name)
+        }
+        list.items.splice(list.items.indexOf(existing), 1)
+        list.items.unshift(existing)
+    } else {
+        list.items.unshift([
+            { type: TAG_STRING, name: 'name', value: encodeString(name) },
+            { type: TAG_STRING, name: 'ip', value: encodeString(address) },
+            { type: TAG_BYTE, name: 'hidden', value: Buffer.from([0]) }
+        ])
     }
-
-    list.items.unshift([
-        { type: TAG_STRING, name: 'name', value: encodeString(name) },
-        { type: TAG_STRING, name: 'ip', value: encodeString(address) },
-        { type: TAG_BYTE, name: 'hidden', value: Buffer.from([0]) }
-    ])
 
     const out = Buffer.concat([Buffer.from([TAG_COMPOUND]), encodeString(rootName), writePayload(TAG_COMPOUND, root)])
     const tmp = `${file}.tmp`
