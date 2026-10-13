@@ -4,11 +4,9 @@
 // Requirements
 const { URL }                 = require('url')
 const {
-    MojangRestAPI,
     getServerStatus
 }                             = require('helios-core/mojang')
 const {
-    RestResponseStatus,
     isDisplayableError,
     validateLocalFile
 }                             = require('helios-core/common')
@@ -95,11 +93,17 @@ function setDownloadPercentage(percent){
  * @param {boolean} val True to enable, false to disable.
  */
 function setLaunchEnabled(val){
-    document.getElementById('launch_button').disabled = !val
+    // A pending launcher update keeps the button usable as the update button.
+    document.getElementById('launch_button').disabled = !val && launcherUpdateInfo == null
 }
 
 // Bind launch button
 document.getElementById('launch_button').addEventListener('click', async e => {
+    if(launcherUpdateInfo != null){
+        loggerLanding.info('Installing launcher update', launcherUpdateInfo.version)
+        installLauncherUpdate()
+        return
+    }
     loggerLanding.info('Launching game..')
     try {
         const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
@@ -133,25 +137,123 @@ document.getElementById('settingsMediaButton').onclick = async e => {
     switchView(getCurrentView(), VIEWS.settings)
 }
 
-// Bind avatar overlay button.
-document.getElementById('avatarOverlay').onclick = async e => {
-    await prepareSettings()
-    switchView(getCurrentView(), VIEWS.settings, 500, 500, () => {
-        settingsNavItemListener(document.getElementById('settingsNavAccount'), false)
-    })
+// Account switcher (account pill, top right).
+const accountMenu = document.getElementById('accountMenu')
+
+function renderAccountMenu(){
+    const selected = ConfigManager.getSelectedAccount()
+    const accounts = Object.values(ConfigManager.getAuthAccounts())
+    document.getElementById('accountMenuList').innerHTML = accounts.map(acc => `
+        <button class="accountMenuItem" type="button" uuid="${acc.uuid}" ${selected != null && acc.uuid === selected.uuid ? 'selected' : ''}>
+            <img src="https://mc-heads.net/avatar/${acc.uuid}/32">
+            <span>${acc.displayName}</span>
+        </button>`).join('')
+    document.getElementById('accountMenuLogout').style.display = selected != null ? '' : 'none'
+    for(const item of document.getElementsByClassName('accountMenuItem')){
+        item.onclick = () => {
+            toggleAccountMenu(false)
+            if(!item.hasAttribute('selected')){
+                setSelectedAccount(item.getAttribute('uuid'))
+            }
+        }
+    }
+}
+
+function toggleAccountMenu(open){
+    if(open){
+        renderAccountMenu()
+    }
+    accountMenu.toggleAttribute('open', open)
+}
+
+document.getElementById('user_content').onclick = e => {
+    e.stopPropagation()
+    toggleAccountMenu(!accountMenu.hasAttribute('open'))
+}
+document.addEventListener('click', e => {
+    if(!accountMenu.contains(e.target)){
+        toggleAccountMenu(false)
+    }
+})
+
+document.getElementById('accountMenuAdd').onclick = () => {
+    toggleAccountMenu(false)
+    loginOptionsCancelEnabled(true)
+    loginOptionsViewOnLoginSuccess = VIEWS.landing
+    loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+    loginOptionsViewOnCancel = VIEWS.landing
+    switchView(getCurrentView(), VIEWS.loginOptions)
+}
+
+document.getElementById('accountMenuLogout').onclick = () => {
+    toggleAccountMenu(false)
+    const acc = ConfigManager.getSelectedAccount()
+    if(acc == null){
+        return
+    }
+    const isLastAccount = Object.keys(ConfigManager.getAuthAccounts()).length === 1
+    if(isLastAccount){
+        setOverlayContent(
+            Lang.queryJS('settings.authAccountLogout.lastAccountWarningTitle'),
+            Lang.queryJS('settings.authAccountLogout.lastAccountWarningMessage'),
+            Lang.queryJS('settings.authAccountLogout.confirmButton'),
+            Lang.queryJS('settings.authAccountLogout.cancelButton')
+        )
+        setOverlayHandler(() => {
+            toggleOverlay(false)
+            logOutFromLanding(acc, isLastAccount)
+        })
+        setDismissHandler(() => {
+            toggleOverlay(false)
+        })
+        toggleOverlay(true, true)
+    } else {
+        logOutFromLanding(acc, isLastAccount)
+    }
+}
+
+/**
+ * Log out an account from the landing view and return to it afterwards.
+ * Microsoft logouts finish in the REPLY_LOGOUT handler in settings.js.
+ *
+ * @param {Object} acc The account to log out.
+ * @param {boolean} isLastAccount If this is the only remaining account.
+ */
+function logOutFromLanding(acc, isLastAccount){
+    if(acc.type === 'microsoft'){
+        msftLogoutViewOnClose = VIEWS.landing
+        switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+            ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, acc.uuid, isLastAccount)
+        })
+    } else {
+        AuthManager.removeMojangAccount(acc.uuid).then(() => {
+            if(isLastAccount){
+                updateSelectedAccount(null)
+                loginOptionsCancelEnabled(false)
+                loginOptionsViewOnLoginSuccess = VIEWS.landing
+                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+                switchView(getCurrentView(), VIEWS.loginOptions)
+            } else {
+                updateSelectedAccount(ConfigManager.getSelectedAccount())
+                validateSelectedAccount()
+            }
+        })
+    }
 }
 
 // Bind selected account
 function updateSelectedAccount(authUser){
     let username = Lang.queryJS('landing.selectedAccount.noAccountSelected')
+    let avatar = ''
     if(authUser != null){
         if(authUser.displayName != null){
             username = authUser.displayName
         }
         if(authUser.uuid != null){
-            document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
+            avatar = `url('https://mc-heads.net/avatar/${authUser.uuid}/32')`
         }
     }
+    document.getElementById('avatarContainer').style.backgroundImage = avatar
     user_text.innerHTML = username
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount())
@@ -168,6 +270,29 @@ function updateSelectedServer(serv){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
+    updateLandingHero(serv)
+}
+
+/**
+ * Show the server's name and description from distribution.json as the landing
+ * title and tagline, so switching servers needs no launcher update. Falls back
+ * to heroTitle / heroTagline from _custom.toml.
+ *
+ * @param {Object} serv The selected server.
+ */
+function updateLandingHero(serv){
+    const title = document.getElementById('landingTitle')
+    const tagline = document.getElementById('landingTagline')
+    if(serv != null && serv.rawServer.name){
+        title.textContent = serv.rawServer.name
+    } else {
+        title.innerHTML = Lang.queryEJS('landing.heroTitle')
+    }
+    if(serv != null && serv.rawServer.description){
+        tagline.textContent = serv.rawServer.description
+    } else {
+        tagline.innerHTML = Lang.queryEJS('landing.heroTagline')
+    }
 }
 // Real text is set in uibinder.js on distributionIndexDone.
 server_selection_button.innerHTML = '&#8226; ' + Lang.queryJS('landing.selectedServer.loading')
@@ -176,101 +301,74 @@ server_selection_button.onclick = async e => {
     await toggleServerSelection(true)
 }
 
-// Update Mojang Status Color
-const refreshMojangStatuses = async function(){
-    loggerLanding.info('Refreshing Mojang Statuses..')
-
-    let status = 'grey'
-    let tooltipEssentialHTML = ''
-    let tooltipNonEssentialHTML = ''
-
-    const response = await MojangRestAPI.status()
-    let statuses
-    if(response.responseStatus === RestResponseStatus.SUCCESS) {
-        statuses = response.data
-    } else {
-        loggerLanding.warn('Unable to refresh Mojang service status.')
-        statuses = MojangRestAPI.getDefaultStatuses()
-    }
-    
-    greenCount = 0
-    greyCount = 0
-
-    for(let i=0; i<statuses.length; i++){
-        const service = statuses[i]
-
-        const tooltipHTML = `<div class="mojangStatusContainer">
-            <span class="mojangStatusIcon" style="color: ${MojangRestAPI.statusToHex(service.status)};">&#8226;</span>
-            <span class="mojangStatusName">${service.name}</span>
-        </div>`
-        if(service.essential){
-            tooltipEssentialHTML += tooltipHTML
-        } else {
-            tooltipNonEssentialHTML += tooltipHTML
-        }
-
-        if(service.status === 'yellow' && status !== 'red'){
-            status = 'yellow'
-        } else if(service.status === 'red'){
-            status = 'red'
-        } else {
-            if(service.status === 'grey'){
-                ++greyCount
-            }
-            ++greenCount
-        }
-
-    }
-
-    if(greenCount === statuses.length){
-        if(greyCount === statuses.length){
-            status = 'grey'
-        } else {
-            status = 'green'
-        }
-    }
-    
-    document.getElementById('mojangStatusEssentialContainer').innerHTML = tooltipEssentialHTML
-    document.getElementById('mojangStatusNonEssentialContainer').innerHTML = tooltipNonEssentialHTML
-    document.getElementById('mojang_status_icon').style.color = MojangRestAPI.statusToHex(status)
-}
-
 const refreshServerStatus = async (fade = false) => {
     loggerLanding.info('Refreshing Server Status')
     const serv = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
 
-    let pLabel = Lang.queryJS('landing.serverStatus.server')
-    let pVal = Lang.queryJS('landing.serverStatus.offline')
+    let online = false
+    let pVal = ''
 
     try {
 
         const servStat = await getServerStatus(47, serv.hostname, serv.port)
         console.log(servStat)
-        pLabel = Lang.queryJS('landing.serverStatus.players')
+        online = true
         pVal = servStat.players.online + '/' + servStat.players.max
 
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')
         loggerLanding.debug(err)
     }
+    const paidUntil = serv.rawServer.paidUntil
+
+    const applyStatus = () => {
+        document.getElementById('server_status_wrapper').toggleAttribute('online', online)
+        document.getElementById('landingPlayerLabel').innerHTML = Lang.queryJS(online ? 'landing.serverStatus.online' : 'landing.serverStatus.offline')
+        document.getElementById('player_count').innerHTML = pVal
+        updatePaidUntil(paidUntil)
+    }
     if(fade){
         $('#server_status_wrapper').fadeOut(250, () => {
-            document.getElementById('landingPlayerLabel').innerHTML = pLabel
-            document.getElementById('player_count').innerHTML = pVal
+            applyStatus()
             $('#server_status_wrapper').fadeIn(500)
         })
     } else {
-        document.getElementById('landingPlayerLabel').innerHTML = pLabel
-        document.getElementById('player_count').innerHTML = pVal
+        applyStatus()
     }
-    
+
 }
 
-refreshMojangStatuses()
+/**
+ * Show how long the server is still paid for, from the server's optional
+ * `paidUntil` date (YYYY-MM-DD, last paid day) in distribution.json.
+ * Hidden when the date is missing or invalid.
+ *
+ * @param {string} paidUntil The last paid day.
+ */
+function updatePaidUntil(paidUntil){
+    const el = document.getElementById('server_paid_until')
+    const end = paidUntil != null ? new Date(`${paidUntil}T23:59:59`) : null
+    if(end == null || isNaN(end)){
+        el.parentElement.removeAttribute('paid')
+        return
+    }
+    const daysLeft = Math.floor((end - Date.now()) / 86400000)
+    let text
+    if(daysLeft < 0){
+        text = Lang.queryJS('landing.paidUntil.expired')
+    } else if(daysLeft === 1){
+        text = Lang.queryJS('landing.paidUntil.oneDay')
+    } else {
+        text = Lang.queryJS('landing.paidUntil.days', { days: daysLeft })
+    }
+    el.innerHTML = text
+    el.title = Lang.queryJS('landing.paidUntil.tooltip', { date: end.toLocaleDateString() })
+    el.toggleAttribute('soon', daysLeft <= 7)
+    el.parentElement.setAttribute('paid', '')
+}
+
 // Server Status is refreshed in uibinder.js on distributionIndexDone.
 
-// Refresh statuses every hour. The status page itself refreshes every day so...
-let mojangStatusListener = setInterval(() => refreshMojangStatuses(true), 60*60*1000)
 // Set refresh rate to once every 5 minutes.
 let serverStatusListener = setInterval(() => refreshServerStatus(true), 300000)
 

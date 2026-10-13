@@ -145,6 +145,12 @@ Only one server in the array should have the `mainServer` property enabled. This
 
 Whether or not the server can be autoconnected to. If false, the server will not be autoconnected to even when the user has the autoconnect setting enabled.
 
+### `Server.paidUntil: string`
+
+**OPTIONAL** (BTD addition)
+
+The last day the server is paid for, as `YYYY-MM-DD` (e.g. `"2026-12-31"`). The landing page shows the days left in the server pill (0 on the last paid day), highlighted in the last 7 days and shown as "Expired" after the date. Omit it to hide this.
+
 ### `Server.javaOptions: JavaOptions`
 
 **OPTIONAL**

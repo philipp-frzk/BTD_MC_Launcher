@@ -1,211 +1,201 @@
-<p align="center"><img src="./app/assets/images/SealCircle.png" width="150px" height="150px" alt="aventium softworks"></p>
+<p align="center"><img src="./app/assets/images/logo.svg" width="120px" alt="BTD"></p>
 
-<h1 align="center">Helios Launcher</h1>
+<h1 align="center">BTD Minecraft Launcher</h1>
 
-<em><h5 align="center">(formerly Electron Launcher)</h5></em>
+Launcher for the Business To Do Minecraft server. It installs Java, Minecraft, Fabric and the modpack, keeps them up to date and joins the server automatically.
 
-[<p align="center"><img src="https://img.shields.io/github/actions/workflow/status/dscalzi/HeliosLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions">](https://github.com/dscalzi/HeliosLauncher/actions) [<img src="https://img.shields.io/github/downloads/dscalzi/HeliosLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dscalzi/HeliosLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="winter-is-coming"></p>
+Based on [HeliosLauncher](https://github.com/dscalzi/HeliosLauncher) by Daniel Scalzi (see `LICENSE.txt`).
 
-<p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
-
-![Screenshot 1](https://i.imgur.com/6o7SmH6.png)
-![Screenshot 2](https://i.imgur.com/x3B34n1.png)
-
-## Features
-
-* 🔒 Full account management.
-  * Add multiple accounts and easily switch between them.
-  * Microsoft (OAuth 2.0) + Mojang (Yggdrasil) authentication fully supported.
-  * Credentials are never stored and transmitted directly to Mojang.
-* 📂 Efficient asset management.
-  * Receive client updates as soon as we release them.
-  * Files are validated before launch. Corrupt or incorrect files will be redownloaded.
-* ☕ **Automatic Java validation.**
-  * If you have an incompatible version of Java installed, we'll install the right one *for you*.
-  * You do not need to have Java installed to run the launcher.
-* 📰 News feed natively built into the launcher.
-* ⚙️ Intuitive settings management, including a Java control panel.
-* Supports all of our servers.
-  * Switch between server configurations with ease.
-  * View the player count of the selected server.
-* Automatic updates. That's right, the launcher updates itself.
-*  View the status of Mojang's services.
-
-This is not an exhaustive list. Download and install the launcher to gauge all it can do!
-
-#### Need Help? [Check the wiki.][wiki]
-
-#### Like the project? Leave a ⭐ star on the repository!
-
-## Downloads
-
-You can download from [GitHub Releases](https://github.com/dscalzi/HeliosLauncher/releases)
-
-#### Latest Release
-
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher.svg?style=flat-square)](https://github.com/dscalzi/HeliosLauncher/releases/latest)
-
-#### Latest Pre-Release
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher/all.svg?style=flat-square)](https://github.com/dscalzi/HeliosLauncher/releases)
-
-**Supported Platforms**
-
-If you download from the [Releases](https://github.com/dscalzi/HeliosLauncher/releases) tab, select the installer for your system.
-
-| Platform | File |
-| -------- | ---- |
-| Windows x64 | `Helios-Launcher-setup-VERSION.exe` |
-| macOS x64 | `Helios-Launcher-setup-VERSION-x64.dmg` |
-| macOS arm64 | `Helios-Launcher-setup-VERSION-arm64.dmg` |
-| Linux x64 | `Helios-Launcher-setup-VERSION.AppImage` |
-
-## Console
-
-To open the console, use the following keybind.
-
-```console
-ctrl + shift + i
-```
-
-Ensure that you have the console tab selected. Do not paste anything into the console unless you are 100% sure of what it will do. Pasting the wrong thing can expose sensitive information.
-
-#### Export Output to a File
-
-If you want to export the console output, simply right click anywhere on the console and click **Save as..**
-
-![console example](https://i.imgur.com/T5e73jP.png)
-
+---
 
 ## Development
 
-This section details the setup of a basic developmentment environment.
-
-### Getting Started
-
-**System Requirements**
-
-* [Node.js][nodejs] v22
-
----
-
-**Clone and Install Dependencies**
+Requires [Node.js](https://nodejs.org/) 22+.
 
 ```console
-> git clone https://github.com/dscalzi/HeliosLauncher.git
-> cd HeliosLauncher
-> npm install
+npm install
+npm start
 ```
+
+IntelliJ run configurations (`.idea/runConfigurations`):
+
+| Configuration | What it does |
+|---|---|
+| **Launcher** | Starts the launcher in development mode (`npm start`). |
+| **Distro - generate from modpack** | Builds the server list from a `.mrpack` (`npm run distro`). |
+
+In development mode the launcher never updates itself, and it always loads the server list from the web server.
 
 ---
 
-**Launch Application**
+## Files on the web server
+
+The website (BTD GameCollection, running on the Raspberry Pi) serves everything in its folder **`data/minecraft/`** at **`https://business-to-do.com/minecraft/`**. The folder sits inside the website directory, next to `btd_gamecollection.db`; the website creates it on start, and deploys don't touch it. The files get there through the [automatic deployment](#automatic-deployment) (or by hand, e.g. with `scp`); they are not part of the website's Git repository.
+
+```
+<website directory>/data/minecraft/
+├── distribution.json                         server list: server, Fabric, mods
+├── versions/
+│   └── fabric-loader-<loader>-<mc>.json      Fabric version file (referenced by distribution.json)
+└── launcher/
+    ├── latest.yml                            tells installed launchers which version is current
+    ├── BTD-Launcher-setup-<version>.exe      installer (also the download for new players)
+    └── BTD-Launcher-setup-<version>.exe.blockmap   lets updates download only the changed parts
+```
+
+| From this project | Upload to (on the Pi) | Public URL |
+|---|---|---|
+| `distro/output/distribution.json` | `data/minecraft/distribution.json` | `/minecraft/distribution.json` |
+| `distro/output/versions/*.json` | `data/minecraft/versions/` | `/minecraft/versions/…` |
+| `dist/BTD-Launcher-setup-<version>.exe` | `data/minecraft/launcher/` | `/minecraft/launcher/…` |
+| `dist/BTD-Launcher-setup-<version>.exe.blockmap` | `data/minecraft/launcher/` | `/minecraft/launcher/…` |
+| `dist/latest.yml` | `data/minecraft/launcher/` — **always last** | `/minecraft/launcher/latest.yml` |
+
+Example with `scp` from this project folder (replace the login and website directory with yours):
 
 ```console
-> npm start
+scp distro\output\distribution.json pi@raspberrypi.local:~/BTD_GameCollection/data/minecraft/
+scp distro\output\versions\*.json pi@raspberrypi.local:~/BTD_GameCollection/data/minecraft/versions/
 ```
 
----
+These addresses are built into the launcher. If they ever change, update all of:
 
-**Build Installers**
+| Setting | File |
+|---|---|
+| Server list URL (`DISTRO_URL`) | `app/assets/js/hosting.js` |
+| Update folder (`publish.url`) | `electron-builder.yml` (baked into the installer at build time) |
+| Update folder for the Mac download link (`LAUNCHER_UPDATE_URL`) | `app/assets/js/hosting.js` |
+| Base URL for the Fabric version file (`baseUrl`) | `distro/config.json` |
 
-To build for your current platform.
-
-```console
-> npm run dist
-```
-
-Build for a specific platform.
-
-| Platform    | Command              |
-| ----------- | -------------------- |
-| Windows x64 | `npm run dist:win`   |
-| macOS       | `npm run dist:mac`   |
-| Linux x64   | `npm run dist:linux` |
-
-Builds for macOS may not work on Windows/Linux and vice-versa.
+> Launchers that are already installed keep checking the update folder that was baked into **their** installer. Moving the update folder therefore needs one last update from the old location.
 
 ---
 
-### Visual Studio Code
+## Automatic deployment
 
-All development of the launcher should be done using [Visual Studio Code][vscode].
+Deployment is **pull-only**: GitHub builds the files and publishes them, and the Raspberry Pi fetches them. Nothing connects to the Pi.
 
-Paste the following into `.vscode/launch.json`
+1. Every push to `master` runs the **Deploy** workflow (`.github/workflows/deploy.yml`) on GitHub's machines:
 
-```JSON
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Debug Main Process",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/node_modules/electron/cli.js",
-      "args" : ["."],
-      "outputCapture": "std"
-    },
-    {
-      "name": "Debug Renderer Process",
-      "type": "chrome",
-      "request": "launch",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-      "windows": {
-        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-      },
-      "runtimeArgs": [
-        "${workspaceFolder}/.",
-        "--remote-debugging-port=9222"
-      ],
-      "webRoot": "${workspaceFolder}"
-    }
-  ]
-}
-```
+   | Part | Built when | Built on |
+   |---|---|---|
+   | Server list (`distribution.json` + `versions/`) | always, from `distro/modpack.mrpack` + `distro/config.json`; **published only if it differs** from the released one | Linux |
+   | Launcher (`.exe`, `.blockmap`, `latest.yml`) | the version in `package.json` differs from the released one | Windows |
 
-This adds two debug configurations.
+   The results go into the release **`deploy`** of this repository (*Releases*), together with a `manifest.json` that lists every file with its checksum. Pushes that change neither part publish nothing. *Actions → Deploy → Run workflow* starts it by hand; tick *force* to rebuild both.
+2. The Pi's deploy script runs `bun scripts/pull-minecraft.ts` in the website directory (BTD GameCollection). It reads the manifest and downloads only the files whose checksum differs into `data/minecraft/`, the installer before `latest.yml`, each one swapped in whole.
 
-#### Debug Main Process
+So a change is live after the workflow finishes **and** the Pi's deploy script has run next.
 
-This allows you to debug Electron's [main process][mainprocess]. You can debug scripts in the [renderer process][rendererprocess] by opening the DevTools Window.
+### One-time setup
 
-#### Debug Renderer Process
+1. **Modpack:** commit your export as `distro/modpack.mrpack` (the only `.mrpack` Git doesn't ignore).
+2. **Token for the Pi:** on GitHub, *Settings (of your account) → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token*:
+   - *Repository access:* **Only select repositories** → this repository
+   - *Permissions:* **Contents: Read-only** (nothing else)
+   - Note the expiry date; renew the token before it runs out.
+3. **On the Pi**, add to the website's `.env`:
 
-This allows you to debug Electron's [renderer process][rendererprocess]. This requires you to install the [Debugger for Chrome][chromedebugger] extension.
+   ```
+   MINECRAFT_DEPLOY_REPO=philipp-frzk/BTD_MC_Vanilla_Launcher
+   MINECRAFT_DEPLOY_TOKEN=github_pat_...
+   ```
 
-Note that you **cannot** open the DevTools window while using this debug configuration. Chromium only allows one debugger, opening another will crash the program.
+   and add this line at the end of the deploy script (outside the `if`, so it runs on every run):
+
+   ```bash
+   bun scripts/pull-minecraft.ts
+   ```
+
+The token can only read this repository; even if it leaks, nobody can push or reach the Pi with it.
 
 ---
 
-### Note on Third-Party Usage
+## Shipping modpack and server changes
 
-Please give credit to the original author and provide a link to the original source. This is free software, please do at least this much.
+Use this for new or updated mods, a new Minecraft or Fabric version, or changes to the server address, name, description or paid-until date. **No launcher update is needed** — players get the changes the next time they press *Spielen*.
 
-For instructions on setting up Microsoft Authentication, see https://github.com/dscalzi/HeliosLauncher/blob/master/docs/MicrosoftAuth.md.
+1. **Modpack (if it changed):** make the changes in the Modrinth App and test them. Then export the profile (*⋮ → Export modpack*) and save it over **`distro/modpack.mrpack`**.
+2. **Server details (if they changed):** edit `distro/config.json` (for a quick `paidUntil` change, editing it directly on GitHub works too):
+
+   ```json
+   {
+       "baseUrl": "https://business-to-do.com/minecraft/",
+       "server": {
+           "id": "btd",
+           "name": "Business To Do Minecraft Vanilla",
+           "description": "Vanilla+ Survival. ...",
+           "address": "<g-portal ip>:<port>",
+           "paidUntil": "2026-12-31",
+           "autoconnect": true
+       }
+   }
+   ```
+
+   | Field | Meaning |
+   |---|---|
+   | `id` | Keep it the same. Changing it gives every player a fresh game folder (settings, worlds and screenshots stay behind in the old one). |
+   | `name` / `description` | Title and tagline on the launcher's main page. |
+   | `address` | Used for the online status, the player count and auto-join. |
+   | `paidUntil` | Last paid day (`YYYY-MM-DD`). Shown as "noch X Tage" in the server pill; remove it to hide the countdown. |
+
+3. **Test locally (optional):** run **Distro - generate from modpack** (or `npm run distro`). It uses `distro/modpack.mrpack`, prints the Minecraft and Fabric versions and the mods, checks that the server answers and opens `distro/output/`. Server-only mods are left out (install those on G-Portal).
+4. **Commit and push.** The Deploy workflow generates and publishes the server list; the Pi picks it up on its next deploy run.
+5. **Check:** open `https://business-to-do.com/minecraft/distribution.json` in the browser. The server status and Serverkasse on the website pick up the new file within 5 minutes.
+
+Without the workflow: run step 3 and upload the contents of `distro/output/` into `data/minecraft/` on the Pi, keeping the folders (see [Files on the web server](#files-on-the-web-server)).
+
+Also update the G-Portal server whenever the Minecraft version, Fabric Loader or server-side mods change.
 
 ---
 
-## Resources
+## Shipping a new launcher version
 
-* [Wiki][wiki]
-* [Nebula (Create Distribution.json)][nebula]
-* [v2 Rewrite Branch (Inactive)][v2branch]
+Use this for changes to the launcher itself (design, features, fixes). Installed launchers download the update in the background and turn *Spielen* into **UPDATE**; it is also installed when the launcher is closed.
 
-The best way to contact the developers is on Discord.
+1. **Raise the version** in `package.json`, e.g. `1.0.0` → `1.0.1`. Installed launchers only update to a *higher* version.
+2. **Commit and push.** The Deploy workflow sees the new version, builds the installer on Windows (roughly 10 minutes) and publishes it; the Pi picks it up on its next deploy run (`latest.yml` last).
+3. **Check:** `https://business-to-do.com/minecraft/launcher/latest.yml` shows the new version, and the download page `https://business-to-do.com/minecraft/launcher` offers it. An installed launcher picks it up within 30 minutes or on its next start.
+4. **Clean up (optional):** older installers in `data/minecraft/launcher/` can be deleted once everyone has updated. Keep the current one — the download page links to it.
 
-[![discord](https://discordapp.com/api/guilds/211524927831015424/embed.png?style=banner3)][discord]
+Code changes pushed *without* a version bump are not deployed.
+
+### Building and uploading by hand
+
+1. **Build:**
+
+   ```console
+   npm run dist
+   ```
+
+   This creates in `dist/`:
+
+   | File | Upload? |
+   |---|---|
+   | `BTD-Launcher-setup-1.0.1.exe` | yes |
+   | `BTD-Launcher-setup-1.0.1.exe.blockmap` | yes |
+   | `latest.yml` | yes — **last** |
+   | `win-unpacked/` | no (the unpacked app, for testing: `win-unpacked/BTD Launcher.exe`) |
+
+2. **Upload** into `data/minecraft/launcher/` on the Pi: first the `.exe` and `.blockmap`, **then** `latest.yml`. If `latest.yml` arrives first, launchers may look for an installer that isn't there yet.
+
+   ```console
+   scp dist\BTD-Launcher-setup-1.0.1.exe dist\BTD-Launcher-setup-1.0.1.exe.blockmap pi@raspberrypi.local:~/BTD_GameCollection/data/minecraft/launcher/
+   scp dist\latest.yml pi@raspberrypi.local:~/BTD_GameCollection/data/minecraft/launcher/
+   ```
 
 ---
 
-### See you ingame.
+## First install for new players
 
+Send them the download page: **`https://business-to-do.com/minecraft/launcher`**. It always offers the current installer (it reads `latest.yml`) and explains the install steps.
 
-[nodejs]: https://nodejs.org/en/ 'Node.js'
-[vscode]: https://code.visualstudio.com/ 'Visual Studio Code'
-[mainprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Main Process'
-[rendererprocess]: https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes 'Renderer Process'
-[chromedebugger]: https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome 'Debugger for Chrome'
-[discord]: https://discord.gg/zNWUXdt 'Discord'
-[wiki]: https://github.com/dscalzi/HeliosLauncher/wiki 'wiki'
-[nebula]: https://github.com/dscalzi/Nebula 'dscalzi/Nebula'
-[v2branch]: https://github.com/dscalzi/HeliosLauncher/tree/ts-refactor 'v2 branch'
+- The installer isn't code-signed, so Windows shows *"Windows hat Ihren PC geschützt"* → **Weitere Informationen → Trotzdem ausführen**.
+- It installs per user (no admin rights needed) to `%LOCALAPPDATA%\Programs\`. Game files and settings are stored in `%APPDATA%\BTD Launcher`.
+- On the first start they sign in with Microsoft; the launcher then downloads Java, Minecraft and the mods.
+
+---
+
+## Microsoft login
+
+The Microsoft app ID is set in `app/assets/js/ipcconstants.js` (`AZURE_CLIENT_ID`). Registering your own ID is described in [docs/MicrosoftAuth.md](docs/MicrosoftAuth.md). After switching IDs, every player has to sign in again once.

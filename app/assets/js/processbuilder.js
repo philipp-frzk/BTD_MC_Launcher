@@ -372,7 +372,7 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=HeliosLauncher')
+            args.push('-Xdock:name=BTD Launcher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
@@ -423,7 +423,7 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=HeliosLauncher')
+            args.push('-Xdock:name=BTD Launcher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
@@ -523,9 +523,13 @@ class ProcessBuilder {
                             break
                         case 'natives_directory':
                             val = args[i].replace(argDiscovery, tempNativePath)
+                            // 26.x passes subfolders (e.g. ${natives_directory}/jna); make sure they exist.
+                            if(val.includes('=')){
+                                fs.ensureDirSync(val.substring(val.indexOf('=') + 1))
+                            }
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, 'Helios-Launcher')
+                            val = args[i].replace(argDiscovery, 'BTD-Launcher')
                             break
                         case 'launcher_version':
                             val = args[i].replace(argDiscovery, this.launcherVersion)
@@ -719,6 +723,8 @@ class ProcessBuilder {
 
         const libArr = this.vanillaManifest.libraries
         fs.ensureDirSync(tempNativePath)
+        const nativeLibDir = this._resolveNativeLibraryDir(tempNativePath)
+        fs.ensureDirSync(nativeLibDir)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
             if(isLibraryCompatible(lib.rules, lib.natives)){
@@ -750,7 +756,7 @@ class ProcessBuilder {
 
                         // Extract the file.
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, fileName), zipEntries[i].getData(), (err) => {
+                            fs.writeFile(path.join(nativeLibDir, fileName), zipEntries[i].getData(), (err) => {
                                 if(err){
                                     logger.error('Error while extracting native library:', err)
                                 }
@@ -801,7 +807,7 @@ class ProcessBuilder {
 
                         // Extract the file.
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, extractName), zipEntries[i].getData(), (err) => {
+                            fs.writeFile(path.join(nativeLibDir, extractName), zipEntries[i].getData(), (err) => {
                                 if(err){
                                     logger.error('Error while extracting native library:', err)
                                 }
@@ -822,6 +828,21 @@ class ProcessBuilder {
         }
 
         return libs
+    }
+
+    /**
+     * Directory the native libraries are extracted to: the folder `java.library.path` points at.
+     * Up to 1.21 that is the natives directory itself; Minecraft 26.x uses `${natives_directory}/java`.
+     *
+     * @param {string} tempNativePath The natives directory.
+     * @returns {string} The directory to extract native libraries to.
+     */
+    _resolveNativeLibraryDir(tempNativePath){
+        const prefix = '-Djava.library.path=${natives_directory}'
+        const jvmArgs = this.vanillaManifest.arguments?.jvm ?? []
+        const arg = jvmArgs.find(a => typeof a === 'string' && a.startsWith(prefix))
+        const subPath = arg != null ? arg.substring(prefix.length).replace(/^[\\/]+/, '') : ''
+        return path.join(tempNativePath, subPath)
     }
 
     /**

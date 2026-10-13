@@ -33,10 +33,9 @@ exports.queryEJS = function(id, placeHolders){
 }
 
 exports.setupLanguage = function(){
-    // Load Language Files
+    // Load Language Files (English stays as the fallback for anything not translated)
     exports.loadLanguage('en_US')
-    // Uncomment this when translations are ready
-    //exports.loadLanguage('xx_XX')
+    exports.loadLanguage('de_DE')
 
     // Load Custom Language File for Launcher Customizer
     exports.loadLanguage('_custom')

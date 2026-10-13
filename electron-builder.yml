@@ -1,14 +1,14 @@
-appId: 'helioslauncher'
-productName: 'Helios Launcher'
-artifactName: '${productName}-setup-${version}.${ext}'
+appId: 'btdlauncher'
+productName: 'BTD Launcher'
+artifactName: 'BTD-Launcher-setup-${version}.${ext}'
 
-copyright: 'Copyright © 2018-2026 Daniel Scalzi'
+copyright: 'Copyright © 2026 BTD. Based on HeliosLauncher, Copyright © 2018-2026 Daniel Scalzi'
 
 asar: true
 compression: 'maximum'
 
 files:
-  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
+  - '!{dist,distro,tools,.idea,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
 
 extraResources:
   - 'libraries'
@@ -33,18 +33,24 @@ mac:
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
+  artifactName: 'BTD-Launcher-setup-${version}-${arch}.${ext}'
   category: 'public.app-category.games'
 
 # Linux Configuration
 linux: 
   target: 'AppImage'
-  maintainer: 'Daniel Scalzi'
-  vendor: 'Daniel Scalzi'
-  synopsis: 'Modded Minecraft Launcher'
+  maintainer: 'Business To Do'
+  vendor: 'Business To Do'
+  synopsis: 'Vanilla+ Minecraft Launcher'
   description: 'Custom launcher which allows users to join modded servers. All mods, configurations, and updates are handled automatically.'
   category: 'Game'
 
+
+# Launcher self-updates: installers + latest.yml go to data/minecraft/launcher/ on the BTD website.
+# Keep in sync with LAUNCHER_UPDATE_URL in app/assets/js/hosting.js.
+publish:
+  provider: 'generic'
+  url: 'https://business-to-do.com/minecraft/launcher/'
 
 directories:
   buildResources: 'build'

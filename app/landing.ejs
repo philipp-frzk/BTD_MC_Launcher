@@ -1,21 +1,61 @@
 <div id="landingContainer" style="display: none;">
-    <div id="upper">
-        <div id="left">
-            <div id="image_seal_container">
-                <img id="image_seal" src="assets/images/SealCircle.png"/>
-                <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
+    <!-- Account switcher, top right. -->
+    <div id="landingAccount">
+        <button id="user_content" type="button">
+            <div id="avatarContainer"></div>
+            <span id="user_text"><%- lang('landing.usernamePlaceholder') %></span>
+            <svg id="accountChevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div id="accountMenu">
+            <div id="accountMenuList">
+                <!-- Accounts populated here. -->
+            </div>
+            <div class="accountMenuDivider"></div>
+            <button id="accountMenuAdd" class="accountMenuAction" type="button">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <%- lang('landing.accountMenuAdd') %>
+            </button>
+            <button id="accountMenuLogout" class="accountMenuAction" type="button">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <%- lang('landing.accountMenuLogout') %>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero: logo, server status, title, play. -->
+    <div id="landingHero">
+        <div id="image_seal_container">
+            <img id="image_seal" src="assets/images/logo.svg"/>
+            <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
+        </div>
+        <div id="server_status_wrapper" class="landingBadge">
+            <span id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
+            <span id="server_status_dot"></span>
+            <span id="player_count"></span>
+            <span class="landingBadgeDivider"></span>
+            <span id="server_paid_until"></span>
+        </div>
+        <h1 id="landingTitle"><%- lang('landing.heroTitle') %></h1>
+        <p id="landingTagline"><%- lang('landing.heroTagline') %></p>
+        <div id="launch_area">
+            <div id="launch_content">
+                <button id="launch_button"><%- lang('landing.launchButton') %></button>
+                <button id="server_selection_button"><%- lang('landing.launchButtonPlaceholder') %></button>
+            </div>
+            <div id="launch_details">
+                <div id="launch_details_left">
+                    <span id="launch_progress_label">0%</span>
+                </div>
+                <div id="launch_details_right">
+                    <progress id="launch_progress" value="22" max="100"></progress>
+                    <span id="launch_details_text"><%- lang('landing.launchDetails') %></span>
+                </div>
             </div>
         </div>
-        <div id="content">
-        </div>
-        <div id="right">
-            <div id="rightContainer">
-                <div id="user_content">
-                    <span id="user_text"><%- lang('landing.usernamePlaceholder') %></span>
-                    <div id="avatarContainer">
-                        <button id="avatarOverlay"><%- lang('landing.usernameEditButton') %></button>
-                    </div>
-                </div>
+    </div>
+
+    <!-- Hidden for now: settings button, social links and news. Scripts still bind to these. -->
+    <div id="landingHidden" style="display: none;">
                 <div id="mediaContent">
                     <div id="internalMedia">
                         <div class="mediaContainer" id="settingsMediaContainer">
@@ -88,42 +128,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div id="lower">
-        <div id="left">
-            <div class="bot_wrapper">
-                <div id="content">
-                    <div id="server_status_wrapper">
-                        <span class="bot_label" id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
-                        <span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span>
-                    </div>
-                    <div class="bot_divider"></div>
-                    <div id="mojangStatusWrapper">
-                        <span class="bot_label"><%- lang('landing.mojangStatus') %></span>
-                        <span id="mojang_status_icon">&#8226;</span>
-                        <div id="mojangStatusTooltip">
-                            <div id="mojangStatusTooltipTitle"><%- lang('landing.mojangStatusTooltipTitle') %></div>
-                            <div id="mojangStatusEssentialContainer">
-                                <!-- Essential Mojang services are populated here. -->
-                            </div>
-                            <div id="mojangStatusNEContainer">
-                                <div class="mojangStatusNEBar"></div>
-                                <div id="mojangStatusNETitle"><%- lang('landing.mojangStatusNETitle') %></div>
-                                <div class="mojangStatusNEBar"></div>
-                            </div>
-                            <div id="mojangStatusNonEssentialContainer">
-                                <!-- Non Essential Mojang services are populated here. -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="center">
-            <div class="bot_wrapper">
-                <div id="content">
                     <button id="newsButton">
                         <!--<img src="assets/images/icons/arrow.svg" id="newsButtonSVG"/>-->
                         <div id="newsButtonAlert" style="display: none;"></div>
@@ -135,28 +139,6 @@
                         </svg>
                         &#10;<span id="newsButtonText"><%- lang('landing.newsButton') %></span>
                     </button>
-                </div>
-            </div>
-        </div>
-        <div id="right">
-            <div class="bot_wrapper">
-                <div id="launch_content">
-                    <button id="launch_button"><%- lang('landing.launchButton') %></button>
-                    <div class="bot_divider"></div>
-                    <button id="server_selection_button" class="bot_label"><%- lang('landing.launchButtonPlaceholder') %></button>
-                </div>
-                <div id="launch_details">
-                    <div id="launch_details_left">
-                        <span id="launch_progress_label">0%</span>
-                        <div class="bot_divider"></div>
-                    </div>
-                    <div id="launch_details_right">
-                        <progress id="launch_progress" value="22" max="100"></progress>
-                        <span id="launch_details_text" class="bot_label"><%- lang('landing.launchDetails') %></span>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <div id="newsContainer">
         <div id="newsContent" article="-1" style="display: none;">

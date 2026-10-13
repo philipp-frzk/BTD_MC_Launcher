@@ -1,6 +1,24 @@
+# Dependencies and build output
 /node_modules/
+/dist/
+/target/
+
+# Logs
+/logs/
+*.log
+npm-debug.log*
+
+# Editors (IntelliJ: personal state is ignored via .idea/.gitignore, run configurations are shared)
 /.vs/
 /.vscode/
-/target/
-/logs/
-/dist/
+
+# Distro tool: generated upload files, download cache and modpack exports (except the deployed one)
+/distro/output/
+/distro/.cache/
+*.mrpack
+!/distro/modpack.mrpack
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

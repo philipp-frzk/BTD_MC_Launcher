@@ -1,5 +1,6 @@
 /* Github Code Highlighting. */
 @import "../../../node_modules/github-syntax-dark/lib/github-dark.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /*******************************************************************************
  *                                                                             *
@@ -7,19 +8,9 @@
  *                                                                             *
  ******************************************************************************/
 
-@font-face {
-    font-family: 'Avenir Book';
-    src: url('../fonts/Avenir-Book.ttf');
-}
-
-@font-face {
-    font-family: 'Avenir Medium';
-    src: url('../fonts/Avenir-Medium.ttf');
-}
-
-@font-face {
-    font-family: 'Ringbearer';
-    src: url('../fonts/Ringbearer.ttf');
+/* Inter is loaded above; system sans-serif is the offline fallback. */
+:root {
+    --font: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /*******************************************************************************
@@ -42,7 +33,7 @@ p {
 
 /* Set default font and color. */
 body, button {
-    font-family: 'Avenir Book';
+    font-family: var(--font);
     color: white;
 }
 
@@ -107,11 +98,6 @@ body, button {
 /* Frame logo (windows only). */
 #frameTitleDock {
     padding: 0px 10px;
-}
-#frameTitleText {
-    font-size: 14px;
-    font-family: 'Avenir Medium';
-    letter-spacing: 0.5px;
 }
 
 /* Windows frame button dock. */
@@ -273,9 +259,9 @@ body, button {
 */
 
 #welcomeImageSeal {
-    border-radius: 50%;
-    border: 2px solid #cad7e1;
-    background: rgba(1, 2, 1, 0.5);
+    border-radius: 0;
+    border: none;
+    background: none;
     height: 125px;
     width: 125px;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
@@ -284,7 +270,8 @@ body, button {
 }
 
 #welcomeHeader {
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     text-align: center;
     color: white;
     margin-bottom: 25px;
@@ -486,9 +473,9 @@ body, button {
 
 /* Logo on login form. */
 #loginImageSeal {
-    border-radius: 50%;
-    border: 2px solid #cad7e1;
-    background: rgba(1, 2, 1, 0.5);
+    border-radius: 0;
+    border: none;
+    background: none;
     height: 125px;
     width: 125px;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
@@ -497,7 +484,8 @@ body, button {
 
 /* Header on login view. */
 #loginSubheader {
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     margin-bottom: 25px;
     font-size: 12px;
     letter-spacing: 1px;
@@ -522,7 +510,8 @@ body, button {
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-weight: bold;
     font-size: 8px;
     color: #ff1b0c;
@@ -558,7 +547,7 @@ body, button {
 
 /* Login text input styles. */
 .loginField {
-    font-family: 'Avenir Book';
+    font-family: var(--font);
     background: none;
     border-width: 1.5px 0px 0px 0px;
     border-style: solid;
@@ -1222,7 +1211,8 @@ body, button {
 }
 .settingsTabHeaderText {
     font-size: 20px;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
 }
 .settingsTabHeaderDesc {
     font-size: 12px;
@@ -1261,7 +1251,8 @@ body, button {
     background: none;
     font-size: 12px;
     border-radius: 3px;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -1293,7 +1284,7 @@ body, button {
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     border: 1px solid rgba(126, 126, 126, 0.57);
-    font-family: 'Avenir Book';
+    font-family: var(--font);
     transition: 0.25s ease;
 }
 #settingsContainer input[type=number]:focus,
@@ -1322,7 +1313,8 @@ body, button {
 }
 .settingsFieldTitle {
     font-size: 14px;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.95);
 }
 .settingsFieldDesc {
@@ -1373,9 +1365,11 @@ body, button {
     transition: .4s;
 }
 input:checked + .toggleSwitchSlider {
-    background-color: rgb(31, 140, 11);
-    /* box-shadow: inset 2px 1px 20px black; */
-    border: 1px solid rgb(31, 140, 11);
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
+}
+input:checked + .toggleSwitchSlider:before {
+    background-color: #000000;
 }
 input:checked + .toggleSwitchSlider:before {
     transform: translateX(15px);
@@ -1392,7 +1386,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 .rangeSliderBar {
     position: absolute;
-    background: #8be88b;
+    background: #ffffff;
     width: 50%;
     height: 5px;
     border-radius: 3px 0px 0px 3px;
@@ -1485,7 +1479,8 @@ input:checked + .toggleSwitchSlider:before {
     width: 89%;
 }
 .settingsFileSelDesc strong {
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
 }
 
 /* * *
@@ -1593,7 +1588,8 @@ input:checked + .toggleSwitchSlider:before {
     font-size: 12px;
     color: grey;
     font-weight: bold;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
 }
 .settingsAuthAccountDetailValue {
     font-size: 14px;
@@ -1615,7 +1611,8 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     white-space: nowrap;
     background: none;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     outline: none;
     transition: 0.25s ease;
 }
@@ -1640,7 +1637,8 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     font-size: 12px;
     border-radius: 3px;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -1750,7 +1748,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: #c32625;
+    background-color: #4a4a4a;
     margin-right: 15px;
     transition: 0.25s ease;
 }
@@ -1775,7 +1773,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Set the status color of an enabled mod. */
 .settingsBaseMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus {
-    background-color: rgb(165, 195, 37);
+    background-color: #ffffff;
 }
 
 /* Add opacity to submods of a disabled mod. */
@@ -2176,11 +2174,11 @@ input:checked + .toggleSwitchSlider:before {
 /* Checkmark next to the version information. */
 #settingsAboutCurrentVersionCheck {
     border-radius: 50%;
-    background: #23aa23;
+    background: #ffffff;
     text-align: center;
     font-weight: bold;
     margin: 11px 12px;
-    color: white;
+    color: black;
     height: 15px;
     width: 15px;
     font-size: 12px;
@@ -2195,8 +2193,9 @@ input:checked + .toggleSwitchSlider:before {
 /* Release type text. */
 #settingsAboutCurrentVersionTitle {
     font-size: 12px;
-    font-family: 'Avenir Medium';
-    color: #23aa23;
+    font-family: var(--font);
+    font-weight: 500;
+    color: #ffffff;
     font-weight: bold;
 }
 
@@ -2284,7 +2283,7 @@ input:checked + .toggleSwitchSlider:before {
     background-color: rgba(255, 255, 255, 0.25);
     color: white;
     border-radius: 3px;
-    font-family: 'Avenir Book';
+    font-family: var(--font);
 }
 .settingsChangelogText li+li {
     margin-top: .25em;
@@ -2375,11 +2374,11 @@ input:checked + .toggleSwitchSlider:before {
 /* Checkmark next to the version information. */
 #settingsUpdateVersionCheck {
     border-radius: 50%;
-    background: #23aa23;
+    background: #ffffff;
     text-align: center;
     font-weight: bold;
     margin: 11px 12px;
-    color: white;
+    color: black;
     height: 15px;
     width: 15px;
     font-size: 12px;
@@ -2394,8 +2393,9 @@ input:checked + .toggleSwitchSlider:before {
 /* Release type text. */
 #settingsUpdateVersionTitle {
     font-size: 12px;
-    font-family: 'Avenir Medium';
-    color: #23aa23;
+    font-family: var(--font);
+    font-weight: 500;
+    color: #ffffff;
     font-weight: bold;
 }
 
@@ -2593,7 +2593,8 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleTitle {
     font-size: 18px;
     font-weight: bold;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
@@ -2641,7 +2642,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Author styles. */
 #newsArticleAuthor {
-    background: #a02d2a;
+    background: #333333;
 }
 
 /* News article comments styles. */
@@ -2858,9 +2859,7 @@ input:checked + .toggleSwitchSlider:before {
     height: 70px;
     width: auto;
     position: relative;
-    border: 2px solid white;
     box-sizing: border-box;
-    border-radius: 50%;
 }
 
 /* Logo container styles. */
@@ -2886,7 +2885,7 @@ input:checked + .toggleSwitchSlider:before {
     top: 0%;
     left: 0%;
     border-radius: 50%;
-    box-shadow: 0 0 15px #43c628;
+    box-shadow: 0 0 15px #ffffff;
     animation: glow-grow 4s ease-out infinite;
     background: rgba(0, 0, 0, 0.15);
 }
@@ -2910,7 +2909,8 @@ input:checked + .toggleSwitchSlider:before {
     z-index: 1;
     top: 115%;
     left: -17.5px;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
@@ -2971,7 +2971,7 @@ input:checked + .toggleSwitchSlider:before {
 /* User profile avatar container. */
 #avatarContainer {
     border-radius: 50%;
-    border: 2px solid #cad7e1;
+    border: 2px solid #ffffff;
     box-sizing: border-box;
     background: rgba(1, 2, 1, 0.5);
     height: 70px;
@@ -3242,7 +3242,8 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 4px;
     padding: 5px 10px;
     z-index: 1;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-size: 12px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
     bottom: calc(100% + 15px);
@@ -3557,7 +3558,8 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Overlay title styles. */
 #overlayTitle {
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 1px;
@@ -3583,7 +3585,8 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
@@ -3635,7 +3638,8 @@ input:checked + .toggleSwitchSlider:before {
 /* Server selection header. */
 #serverSelectHeader,
 #accountSelectHeader {
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-size: 20px;
     font-weight: bold;
     color: #fff;
@@ -3792,7 +3796,7 @@ input:checked + .toggleSwitchSlider:before {
     line-height: 12px;
     height: 12px;
     border-radius: 2px;
-    background: rgba(31, 140, 11, 0.8);
+    background: rgba(255, 255, 255, 0.2);
     padding: 0px 2px;
 }
 
@@ -3858,7 +3862,8 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Avenir Medium';
+    font-family: var(--font);
+    font-weight: 500;
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
@@ -3941,15 +3946,22 @@ input:checked + .toggleSwitchSlider:before {
 /* Stationary image for the spinner. */
 #loadCenterImage {
     position: absolute;
-    width: 277px;
+    width: 140px;
     height: auto;
 }
 
 /* Rotating image for the spinner. */
 #loadSpinnerImage {
-    width: 280px;
-    height: auto;
+    width: 220px;
+    height: 220px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-top-color: #ffffff;
     z-index: 400;
+}
+#loadSpinnerImage.rotating {
+    animation-duration: 1.2s;
 }
 
 /* Rotating animation for the spinner. */
@@ -3965,4 +3977,970 @@ input:checked + .toggleSwitchSlider:before {
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
     animation: rotating 10s linear infinite;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * BTD Theme                                                                   *
+ * Design tokens and components shared with the BTD GameCollection.           *
+ *                                                                             *
+ ******************************************************************************/
+
+:root {
+    --bg: #0a0a0a;
+    --surface: rgba(255, 255, 255, .06);
+    --surface-hover: rgba(255, 255, 255, .10);
+    --border: rgba(255, 255, 255, .14);
+    --card: rgba(255, 255, 255, .07);
+    --panel: #111111;
+    --accent: #ffffff;
+    --accent-hover: #e0e0e0;
+    --green: #4ade80;
+    --red: #f87171;
+    --text: #f5f5f5;
+    --text-secondary: #a0a0a0;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --stripes: linear-gradient(135deg, #0000 18.75%, #1a1a1a 0 31.25%, #0000 0),
+               repeating-linear-gradient(45deg, #1a1a1a -6.25% 6.25%, #141414 0 18.75%);
+}
+
+body, button {
+    color: var(--text);
+}
+body {
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* No neon glows: the GameCollection uses flat colour and border changes. */
+*, *::before, *::after {
+    text-shadow: none !important;
+}
+svg {
+    -webkit-filter: none !important;
+}
+
+/* Soft white glow behind the content (GameCollection hero orb).
+ * A gradient instead of filter: blur(), since the launcher renders without GPU acceleration. */
+body::before {
+    content: '';
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 760px;
+    height: 860px;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, .075), rgba(255, 255, 255, .035) 45%, transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Thin scrollbars. */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 100px;
+}
+
+/* Frame bar */
+#frameButton_close:hover,
+#frameButton_close:focus {
+    background: rgba(248, 113, 113, .6) !important;
+}
+
+/* ---- Primary buttons: white, black text ---- */
+#launch_button,
+#loginButton,
+#welcomeButton,
+#overlayAcknowledge,
+#settingsUpdateActionButton {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 22px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    right: 0;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+#launch_button {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 12px 32px;
+}
+#launch_button:hover, #launch_button:focus,
+#loginButton:hover, #loginButton:focus,
+#welcomeButton:hover, #welcomeButton:focus,
+#overlayAcknowledge:hover, #overlayAcknowledge:focus,
+#settingsUpdateActionButton:hover, #settingsUpdateActionButton:focus {
+    background: var(--accent-hover);
+    color: #0a0a0a;
+    box-shadow: none;
+    transform: translateY(-1px);
+    outline: none;
+}
+#launch_button:active,
+#loginButton:active,
+#welcomeButton:active,
+#overlayAcknowledge:active,
+#settingsUpdateActionButton:active {
+    transform: translateY(0);
+    color: #0a0a0a;
+}
+#launch_button:disabled,
+#loginButton:disabled,
+#welcomeButton:disabled,
+#settingsUpdateActionButton:disabled {
+    background: var(--surface);
+    color: var(--text-secondary);
+    transform: none;
+}
+#loginButton[loading] {
+    color: #0a0a0a;
+}
+#loginSVG, #welcomeSVG {
+    margin-left: 12px;
+    width: 14px;
+    height: 14px;
+}
+#loginButton .arrowLine,
+#welcomeButton .arrowLine,
+#loginButton:active #loginSVG .arrowLine,
+#welcomeButton:active #welcomeSVG .arrowLine {
+    stroke: #0a0a0a;
+}
+#loginButton:disabled .arrowLine,
+#welcomeButton:disabled .arrowLine {
+    stroke: var(--text-secondary);
+}
+#loginButton .circle-loader {
+    border-color: rgba(10, 10, 10, .25);
+    border-left-color: #0a0a0a;
+}
+#welcomeButton {
+    margin-top: 32px;
+    margin-bottom: 0;
+}
+#loginButton {
+    margin: 16px 0 0;
+}
+
+/* ---- Secondary buttons: surface + border ---- */
+#server_selection_button,
+.loginOptionButton,
+.settingsSwitchServerButton,
+.settingsFileSelButton,
+.settingsAboutButton,
+.settingsAddAuthAccount,
+#settingsDropinFileSystemButton,
+#settingsShaderpackButton {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-weight: 500;
+    box-shadow: none;
+    transition: all .2s ease;
+}
+#server_selection_button {
+    margin-left: 12px;
+    padding: 0 14px;
+    line-height: 38px;
+    font-size: 12px;
+}
+.settingsAddAuthAccount {
+    padding: 6px 12px;
+}
+#server_selection_button:hover, #server_selection_button:focus,
+.loginOptionButton:hover, .loginOptionButton:focus,
+.settingsSwitchServerButton:hover, .settingsSwitchServerButton:focus,
+.settingsFileSelButton:hover, .settingsFileSelButton:focus,
+.settingsAboutButton:hover, .settingsAboutButton:focus,
+.settingsAddAuthAccount:hover, .settingsAddAuthAccount:focus,
+#settingsDropinFileSystemButton:hover, #settingsDropinFileSystemButton[drag],
+#settingsShaderpackButton:hover, #settingsShaderpackButton[drag] {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: none;
+    outline: none;
+}
+#server_selection_button:active,
+.settingsSwitchServerButton:active {
+    color: var(--text-secondary);
+    border-color: var(--border);
+}
+.loginOptionButton {
+    height: 52px;
+    color: var(--text);
+}
+
+/* Plain text buttons */
+#loginCancelButton, #loginOptionCancelButton, #overlayDismiss, #settingsNavDone {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+#loginCancelButton:hover, #loginOptionCancelButton:hover, #overlayDismiss:hover, #settingsNavDone:hover,
+#loginCancelButton:focus, #loginOptionCancelButton:focus, #overlayDismiss:focus, #settingsNavDone:focus {
+    color: var(--text);
+}
+
+/* ---- Inputs ---- */
+.loginField,
+#settingsContainer input[type=text],
+#settingsContainer input[type=number] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font);
+    font-weight: 400;
+    letter-spacing: 0;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+.loginField {
+    width: 280px;
+    padding: 12px 14px;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 14px;
+}
+.loginField::-webkit-input-placeholder {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-align: left;
+}
+.loginField:focus,
+#settingsContainer input[type=text]:focus,
+#settingsContainer input[type=number]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .08);
+}
+.loginErrorSpan {
+    color: var(--red);
+    font-size: 10px;
+    top: -16px;
+}
+#settingsContainer input[type=number][error] {
+    border-color: var(--red);
+    background: rgba(248, 113, 113, .05);
+    color: var(--red);
+}
+
+/* Remember-me checkbox */
+.loginCheckmark {
+    border-radius: 4px !important;
+    border: 1.5px solid var(--border) !important;
+    background: var(--surface);
+}
+#checkmarkContainer input:checked ~ .loginCheckmark {
+    background: var(--accent);
+    border-color: var(--accent) !important;
+}
+#checkmarkContainer input:checked ~ .loginCheckmark:after {
+    border-color: #0a0a0a;
+}
+
+/* ---- Toggles and sliders ---- */
+.toggleSwitchSlider {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+}
+.toggleSwitchSlider:before {
+    background-color: var(--text-secondary);
+    box-shadow: none;
+}
+input:checked + .toggleSwitchSlider {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+input:checked + .toggleSwitchSlider:before {
+    background-color: #0a0a0a;
+}
+.rangeSlider {
+    background: var(--border);
+}
+.rangeSliderBar {
+    background: var(--accent);
+}
+
+/* ---- Typography ---- */
+#welcomeHeader {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -1.2px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text) 0%, #a0a0a0 50%, #737373 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#welcomeDescription {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+    font-weight: 400;
+}
+#welcomeDescCTA {
+    color: var(--text-secondary);
+}
+.loginSpanDim,
+.settingsAuthAccountDetailTitle,
+.serverListingRevision {
+    color: var(--text-secondary);
+}
+
+/* ---- Logo images ---- */
+#welcomeImageSeal,
+#loginImageSeal {
+    width: 96px;
+    height: 96px;
+    box-shadow: none;
+}
+#image_seal {
+    height: 56px;
+}
+#image_seal_container {
+    height: 56px;
+    width: 56px;
+    border-radius: var(--radius);
+}
+#image_seal_container[update]:before,
+#image_seal_container[update]:after {
+    border-radius: var(--radius);
+}
+#avatarContainer {
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+/* ---- Settings ---- */
+#settingsContainer {
+    background-color: transparent;
+}
+#settingsContainerLeft {
+    border-right: 1px solid var(--border);
+}
+#settingsNavHeaderText {
+    font-weight: 700;
+    letter-spacing: -.3px;
+}
+.settingsNavItem {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 6px 16px;
+    margin: 3px 0;
+    border: 1px solid transparent;
+    border-radius: 100px;
+}
+.settingsNavItem:hover,
+.settingsNavItem:focus {
+    color: var(--text);
+    background: var(--surface);
+}
+.settingsNavItem[selected] {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border);
+}
+.settingsNavDivider {
+    background: var(--border);
+}
+.settingsFieldContainer,
+.settingsAuthAccountTypeHeader,
+#settingsAboutCurrentHeadline {
+    border-color: var(--border) !important;
+}
+.settingsAuthAccount,
+.settingsSelServContainer,
+.settingsModContent,
+#settingsAboutCurrentContainer,
+#settingsUpdateStatusContainer,
+.settingsChangelogContainer,
+#settingsJVMOptsContent,
+.settingsSelectContainer {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.settingsSelectOptions {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.settingsBaseMod[enabled] > .settingsModContent > .settingsModMainWrapper > .settingsModStatus {
+    background-color: var(--green);
+}
+.settingsModStatus {
+    background-color: var(--border);
+}
+.settingsAuthAccountLogOut {
+    color: var(--red);
+    border: 1px solid rgba(248, 113, 113, .3);
+    border-radius: var(--radius);
+    padding: 4px 10px;
+}
+.settingsAuthAccountLogOut:hover,
+.settingsAuthAccountLogOut:focus {
+    box-shadow: none;
+    background: rgba(248, 113, 113, .05);
+}
+.settingsDropinRemoveButton {
+    color: var(--red);
+}
+#settingsAboutCurrentVersionCheck,
+#settingsUpdateVersionCheck {
+    background: var(--green);
+    color: #0a0a0a;
+}
+#settingsAboutCurrentVersionTitle,
+#settingsUpdateVersionTitle {
+    color: var(--green);
+}
+
+/* ---- Overlay dialogs ---- */
+#overlayContainer {
+    background: rgba(0, 0, 0, .6);
+}
+#overlayContent {
+    width: 340px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .5);
+    animation: btdModalIn .25s ease;
+}
+#overlayTitle {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+#overlayDesc {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+#overlayAcknowledge {
+    width: 100%;
+    margin-top: 8px;
+}
+@keyframes btdModalIn {
+    from { opacity: 0; transform: scale(.95) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Server / account pickers: striped cards like the GameCollection profile picker. */
+.serverListing,
+.accountListing {
+    background: var(--stripes);
+    background-size: 40px 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    opacity: .7;
+    transition: all .2s ease;
+}
+.serverListing:hover,
+.accountListing:hover,
+.serverListing:focus,
+.accountListing:focus {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(255, 255, 255, .05);
+}
+.serverListing[selected],
+.accountListing[selected] {
+    opacity: 1;
+    border-color: var(--accent);
+}
+.serverListingVersion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0 6px;
+}
+.serverListingStarTooltip,
+#updateAvailableTooltip {
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+/* Landing: launch progress */
+#launch_progress[value]::-webkit-progress-bar {
+    background-color: var(--border);
+    border-radius: 100px;
+}
+#launch_progress[value]::-webkit-progress-value {
+    background-color: var(--accent);
+    border-radius: 100px;
+}
+#launch_details_text {
+    color: var(--text-secondary);
+}
+
+/* Landing: keep PLAY and the server picker compact and on one line. */
+#landingContainer > #lower > #right #launch_content {
+    align-items: center;
+    gap: 10px;
+    top: 18px;
+}
+#launch_content > .bot_divider {
+    display: none;
+}
+#launch_button {
+    height: auto;
+    line-height: normal;
+}
+#server_selection_button {
+    margin-left: 0;
+    height: 40px;
+    line-height: 38px;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* Single-server setup: the server picker is hidden for now.
+ * Remove this rule to bring it back once a second (e.g. creative) server exists. */
+#server_selection_button,
+.settingsSwitchServerContainer {
+    display: none !important;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Landing Hero (BTD)                                                          *
+ * Centered logo, title and play button, like the GameCollection login page.   *
+ *                                                                             *
+ ******************************************************************************/
+
+#landingContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Account pill, top right. */
+#landingAccount {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    z-index: 2;
+}
+#landingAccount #user_content {
+    gap: 8px;
+    height: 34px;
+    padding: 4px 14px 4px 4px;
+    border-radius: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color .2s;
+}
+#landingAccount #user_content:hover {
+    border-color: var(--accent);
+}
+#landingAccount #avatarContainer {
+    height: 26px;
+    width: 26px;
+    border: none;
+    box-shadow: none;
+    background-color: var(--surface);
+    background-size: 160%;
+    background-position: center 15%;
+}
+#landingAccount #avatarOverlay {
+    font-size: 0;
+}
+#landingAccount #user_text {
+    position: static;
+    min-width: 0;
+    max-width: 160px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Hero */
+#landingHero {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 24px 24px;
+}
+#landingHero #image_seal_container {
+    margin: 0 0 24px;
+    height: 88px;
+    width: 88px;
+}
+#landingHero #image_seal {
+    height: 88px;
+}
+#landingHero #updateAvailableTooltip {
+    left: -6px;
+}
+
+.landingBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .3px;
+    color: var(--text-secondary);
+}
+#server_status_wrapper.landingBadge {
+    width: auto;
+}
+.landingBadge #landingPlayerLabel {
+    color: var(--text-secondary);
+}
+.landingBadge #player_count {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+#landingTitle {
+    margin: 0 0 12px;
+    max-width: 480px;
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--text) 0%, #a0a0a0 50%, #737373 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#landingTagline {
+    margin: 0 auto 32px;
+    max-width: 440px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+/* Play button + progress */
+#launch_area {
+    display: flex;
+    justify-content: center;
+    min-height: 52px;
+}
+#launch_content {
+    display: inline-flex;
+    align-items: center;
+}
+#landingHero #launch_button {
+    min-width: 200px;
+    padding: 14px 40px;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+}
+#launch_details {
+    top: 0;
+    width: 340px;
+    align-items: center;
+    gap: 14px;
+}
+#launch_details_right {
+    flex: 1;
+    gap: 6px;
+    align-items: flex-start;
+}
+#launch_progress[value] {
+    width: 100%;
+    height: 4px;
+}
+#launch_progress_label {
+    min-width: 48px;
+    max-width: 48px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+#launch_details_text {
+    max-width: 270px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+/* Smaller windows */
+@media (max-height: 600px) {
+    #landingHero #image_seal_container,
+    #landingHero #image_seal {
+        height: 64px;
+        width: 64px;
+    }
+    #landingTitle {
+        font-size: 2.4rem;
+    }
+    #landingTagline {
+        margin-bottom: 24px;
+    }
+}
+
+/* Account switcher dropdown (landing, top right). */
+#landingAccount #user_content {
+    font-family: var(--font);
+    color: var(--text);
+    cursor: pointer;
+    padding-right: 12px;
+}
+#landingAccount #avatarContainer {
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
+    border-radius: 50%;
+}
+#accountChevron {
+    color: var(--text-secondary);
+    transition: transform .2s ease;
+}
+#landingAccount:has(#accountMenu[open]) #accountChevron {
+    transform: rotate(180deg);
+}
+
+#accountMenu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    padding: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .5);
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+}
+#accountMenu[open] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+#accountMenuList:empty + .accountMenuDivider {
+    display: none;
+}
+.accountMenuItem,
+.accountMenuAction {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background .15s;
+}
+.accountMenuItem:hover,
+.accountMenuAction:hover,
+.accountMenuItem:focus-visible,
+.accountMenuAction:focus-visible {
+    background: var(--surface-hover);
+    outline: none;
+}
+.accountMenuItem img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    image-rendering: pixelated;
+}
+.accountMenuItem span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.accountMenuItem[selected] {
+    cursor: default;
+}
+.accountMenuItem[selected]::after {
+    content: '';
+    width: 5px;
+    height: 10px;
+    margin-right: 4px;
+    border: solid var(--text);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translateY(-2px);
+}
+.accountMenuDivider {
+    height: 1px;
+    margin: 6px 4px;
+    background: var(--border);
+}
+.accountMenuAction {
+    color: var(--text-secondary);
+}
+.accountMenuAction:hover {
+    color: var(--text);
+}
+#accountMenuLogout:hover {
+    color: var(--red);
+    background: rgba(248, 113, 113, .08);
+}
+
+/* Square player heads (match the skin's pixel face). */
+#landingAccount #avatarContainer,
+.accountMenuItem img {
+    border-radius: 4px;
+}
+
+/* Waiting view (Microsoft login): same logo + ring spinner as the boot screen. */
+#waitingContainer {
+    background: transparent;
+}
+#waitingContent {
+    top: 0;
+    width: auto;
+}
+.btdSpinner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btdSpinnerLogo {
+    position: absolute;
+    width: 140px;
+    height: auto;
+}
+.btdSpinnerRing {
+    width: 220px;
+    height: 220px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-top-color: #ffffff;
+    animation: rotating 1.2s linear infinite;
+}
+#waitingTextContainer {
+    position: static;
+    margin-top: 28px;
+}
+#waitingTextContainer h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Keep the square head clear of the pill's rounded left edge. */
+#landingAccount #user_content {
+    padding-left: 10px;
+}
+#landingAccount #avatarContainer {
+    height: 20px;
+    width: 20px;
+    border-radius: 3px;
+}
+/* Server pill: days the server is still paid for. */
+.landingBadgeDivider,
+#server_paid_until {
+    display: none;
+}
+#server_status_wrapper[paid] .landingBadgeDivider {
+    display: block;
+    width: 1px;
+    height: 12px;
+    background: var(--border);
+}
+#server_status_wrapper[paid] #server_paid_until {
+    display: inline;
+    color: var(--text-secondary);
+    cursor: default;
+}
+#server_paid_until[soon] {
+    color: var(--red) !important;
+    font-weight: 600;
+}
+/* Server pill: "Online ● 3/10" / "Offline ●". */
+#server_status_wrapper #landingPlayerLabel {
+    color: var(--text);
+    font-weight: 500;
+}
+#server_status_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, .15);
+}
+#server_status_wrapper[online] #server_status_dot {
+    background: var(--green);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, .15);
+}
+#server_status_wrapper:not([online]) #player_count {
+    display: none;
+}
+/* Update button: the GameCollection's secondary button (button.secondary).
+ * Inset outline keeps the size identical to PLAY. */
+#landingHero #launch_button[update] {
+    background: var(--surface);
+    color: var(--text-secondary);
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+#landingHero #launch_button[update]:hover,
+#landingHero #launch_button[update]:focus {
+    background: var(--surface-hover);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+#landingHero #launch_button[update]:active {
+    background: var(--surface-hover);
+    color: var(--text);
+}#landingHero #launch_button[update] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.launchButtonIcon {
+    flex-shrink: 0;
+}
+/* Title/tagline come from the server list: spread long names evenly over two lines. */
+#landingTitle,
+#landingTagline {
+    text-wrap: balance;
 }
