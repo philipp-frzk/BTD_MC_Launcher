@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1932 1932">
+    <defs>
+        <clipPath id="frame">
+            <rect x="4" y="34" width="1924" height="1864" rx="130"/>
+        </clipPath>
+    </defs>
+    <g clip-path="url(#frame)">
+        <!-- Jacket -->
+        <rect width="1932" height="1932" fill="#000"/>
+        <!-- Shirt -->
+        <polygon points="130,34 1800,34 1256,1755 990,1898 724,1898 680,1755" fill="#dedede"/>
+        <!-- Collar -->
+        <polygon points="130,34 527,474 987,62 987,34" fill="#fff"/>
+        <polygon points="987,34 987,62 1372,492 1770,140 1800,34" fill="#fff"/>
+        <!-- Tie -->
+        <polygon points="987,65 712,320 910,543 680,1755 724,1898 987,1898" fill="#1e1e1e"/>
+        <polygon points="987,65 1218,323 1025,543 1256,1755 1256,1898 987,1898" fill="#000"/>
+    </g>
+</svg>

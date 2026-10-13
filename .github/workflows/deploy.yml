@@ -1,0 +1,169 @@
+# Builds the server list and the launcher and publishes them in the "deploy" release.
+# The website's Raspberry Pi pulls that release into data/minecraft (BTD_GameCollection: scripts/pull-minecraft.ts);
+# nothing here connects to the Pi.
+#
+#   Server list: generated from distro/modpack.mrpack + distro/config.json on every push,
+#                published when it differs from the one in the release.
+#   Launcher:    built when the version in package.json differs from the one in the release.
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Publish both even if nothing changed
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  GH_REPO: ${{ github.repository }}
+
+jobs:
+  prepare:
+    name: Server list + launcher version
+    runs-on: ubuntu-latest
+    outputs:
+      distro: ${{ steps.compare.outputs.changed }}
+      launcher: ${{ steps.version.outputs.build }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download the current release
+        run: gh release download deploy -p manifest.json -p distribution.json -D current || echo "No deploy release yet."
+
+      - name: Compare the launcher version
+        id: version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          released=$(node -p "try { require('./current/manifest.json').launcherVersion ?? '' } catch { '' }")
+          echo "package.json: $version, released: ${released:-none}"
+          if [ "$version" != "$released" ] || [ "${{ inputs.force }}" = "true" ]; then build=true; else build=false; fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
+      - name: Look for the modpack
+        id: pack
+        run: |
+          if [ -f distro/modpack.mrpack ]; then echo "found=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::distro/modpack.mrpack is not in the repository - skipping the server list."; fi
+
+      - uses: actions/setup-node@v6
+        if: steps.pack.outputs.found == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.pack.outputs.found == 'true'
+        run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+
+      - name: Cache mod downloads
+        if: steps.pack.outputs.found == 'true'
+        uses: actions/cache@v4
+        with:
+          path: distro/.cache
+          key: distro-${{ hashFiles('distro/modpack.mrpack') }}
+          restore-keys: distro-
+
+      - name: Generate the server list
+        if: steps.pack.outputs.found == 'true'
+        run: npm run distro -- distro/modpack.mrpack
+
+      - name: Compare with the released server list
+        id: compare
+        if: steps.pack.outputs.found == 'true'
+        run: |
+          [ -f current/distribution.json ] || echo '{}' > current/distribution.json
+          # The server entry's "version" is the build date, so it is ignored.
+          changed=$(node -e "
+            const read = f => { const j = JSON.parse(require('fs').readFileSync(f, 'utf8')); for (const s of j.servers || []) delete s.version; return JSON.stringify(j) }
+            console.log(read('current/distribution.json') === read('distro/output/distribution.json') ? 'false' : 'true')")
+          if [ "${{ inputs.force }}" = "true" ]; then changed=true; fi
+          echo "Server list changed: $changed"
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.compare.outputs.changed == 'true'
+        with:
+          name: distro
+          path: distro/output/
+          if-no-files-found: error
+
+  launcher:
+    name: Launcher build
+    needs: prepare
+    if: needs.prepare.outputs.launcher == 'true'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build installer
+        run: npx electron-builder --win --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: launcher
+          path: |
+            dist/BTD-Launcher-setup-*.exe
+            dist/BTD-Launcher-setup-*.exe.blockmap
+            dist/latest.yml
+          if-no-files-found: error
+
+  publish:
+    name: Publish release
+    needs: [prepare, launcher]
+    if: >-
+      !cancelled() && !contains(needs.*.result, 'failure') &&
+      (needs.prepare.outputs.distro == 'true' || needs.launcher.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v4
+        if: needs.launcher.result == 'success'
+        with:
+          name: launcher
+          path: work/launcher
+
+      - uses: actions/download-artifact@v4
+        if: needs.prepare.outputs.distro == 'true'
+        with:
+          name: distro
+          path: work/distro
+
+      - name: Update the deploy release
+        run: |
+          gh release download deploy -p manifest.json -D work/current || echo "No deploy release yet."
+          gh release view deploy > /dev/null 2>&1 || gh release create deploy --prerelease --title "Deploy" \
+            --notes "Current launcher files for the website. The Raspberry Pi pulls them - don't edit by hand."
+
+          node tools/deploy-manifest.js work
+
+          # Files first, manifest last: the Pi only acts on what the manifest lists.
+          files=$(find work/upload -type f ! -name manifest.json)
+          if [ -n "$files" ]; then gh release upload deploy $files --clobber; fi
+          gh release upload deploy work/upload/manifest.json --clobber
+          while read -r asset; do
+            [ -n "$asset" ] && gh release delete-asset deploy "$asset" --yes
+          done < work/stale.txt

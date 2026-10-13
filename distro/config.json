@@ -1,0 +1,11 @@
+{
+    "baseUrl": "https://business-to-do.com/minecraft/",
+    "server": {
+        "id": "btd",
+        "name": "Business To Do Minecraft Vanilla",
+        "description": "Vanilla+ Survival. Der Launcher installiert und aktualisiert die freigegebenen Mods für dich.",
+        "address": "YOUR-SERVER.g-portal.game:25565",
+        "paidUntil": "2026-12-31",
+        "autoconnect": true
+    }
+}

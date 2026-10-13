@@ -1,0 +1,344 @@
+[ejs.landing]
+updateAvailableTooltip = "Update verfügbar"
+usernamePlaceholder = "Benutzername"
+usernameEditButton = "Bearbeiten"
+settingsTooltip = "Einstellungen"
+serverStatus = "SERVER"
+serverStatusPlaceholder = "OFFLINE"
+mojangStatus = "MOJANG-STATUS"
+mojangStatusTooltipTitle = "Dienste"
+mojangStatusNETitle = "Nicht&nbsp;essenziell"
+newsButton = "NEWS"
+launchButton = "SPIELEN"
+launchButtonPlaceholder = "&#8226; Kein Server ausgewählt"
+launchDetails = "Bitte warten.."
+newsNavigationStatus = "{currentPage} von {totalPages}"
+newsErrorLoadSpan = "Suche nach News.."
+newsErrorFailedSpan = "News konnten nicht geladen werden"
+newsErrorRetryButton = "Erneut versuchen"
+newsErrorNoneSpan = "Keine News"
+
+[ejs.login]
+loginCancelText = "Abbrechen"
+loginSubheader = "MINECRAFT-ANMELDUNG"
+loginEmailError = "* Ungültiger Wert"
+loginEmailPlaceholder = "E-MAIL ODER BENUTZERNAME"
+loginPasswordError = "* Erforderlich"
+loginPasswordPlaceholder = "PASSWORT"
+loginForgotPasswordLink = "https://minecraft.net/password/forgot/"
+loginForgotPasswordText = "Passwort vergessen?"
+loginRememberMeText = "Angemeldet bleiben?"
+loginButtonText = "ANMELDEN"
+loginNeedAccountLink = "https://minecraft.net/store/minecraft-java-edition/"
+loginNeedAccountText = "Noch kein Account?"
+loginPasswordDisclaimer1 = "Dein Passwort wird direkt an Mojang gesendet und nie gespeichert."
+loginPasswordDisclaimer2 = "{appName} steht in keiner Verbindung zu Mojang AB."
+
+[ejs.loginOptions]
+loginOptionsTitle = "Anmelden"
+loginWithMicrosoft = "Mit Microsoft anmelden"
+loginWithMojang = "Mit Mojang anmelden"
+cancelButton = "Abbrechen"
+
+[ejs.overlay]
+serverSelectHeader = "Verfügbare Server"
+serverSelectConfirm = "Auswählen"
+serverSelectCancel = "Abbrechen"
+accountSelectHeader = "Account auswählen"
+accountSelectConfirm = "Auswählen"
+accountSelectCancel = "Abbrechen"
+
+[ejs.settings]
+navHeaderText = "Einstellungen"
+navAccount = "Account"
+navMinecraft = "Minecraft"
+navMods = "Mods"
+navJava = "Java"
+navLauncher = "Launcher"
+navAbout = "Über"
+navUpdates = "Updates"
+navDone = "Fertig"
+tabAccountHeaderText = "Account-Einstellungen"
+tabAccountHeaderDesc = "Neue Accounts hinzufügen oder bestehende verwalten."
+microsoftAccount = "Microsoft"
+addMicrosoftAccount = "+ Microsoft-Account hinzufügen"
+mojangAccount = "Mojang"
+addMojangAccount = "+ Mojang-Account hinzufügen"
+minecraftTabHeaderText = "Minecraft-Einstellungen"
+minecraftTabHeaderDesc = "Optionen für den Spielstart."
+gameResolutionTitle = "Auflösung"
+launchFullscreenTitle = "Im Vollbild starten."
+autoConnectTitle = "Beim Start automatisch mit dem Server verbinden."
+launchDetachedTitle = "Spiel unabhängig vom Launcher starten."
+launchDetachedDesc = "Wenn das Spiel nicht unabhängig läuft, wird es beim Schließen des Launchers ebenfalls beendet."
+tabModsHeaderText = "Mod-Einstellungen"
+tabModsHeaderDesc = "Mods aktivieren oder deaktivieren."
+switchServerButton = "Wechseln"
+requiredMods = "Benötigte Mods"
+optionalMods = "Optionale Mods"
+dropinMods = "Eigene Mods"
+addMods = "Mods hinzufügen"
+dropinRefreshNote = "(F5 zum Aktualisieren)"
+shaderpacks = "Shaderpacks"
+shaderpackDesc = "Shader aktivieren oder deaktivieren. Shader laufen nur auf leistungsstarken Rechnern flüssig. Hier kannst du eigene Packs hinzufügen."
+selectShaderpack = "Shaderpack auswählen"
+tabJavaHeaderText = "Java-Einstellungen"
+tabJavaHeaderDesc = "Java-Konfiguration verwalten (fortgeschritten)."
+memoryTitle = "Arbeitsspeicher"
+maxRAM = "Maximaler RAM"
+minRAM = "Minimaler RAM"
+memoryDesc = "Empfohlen sind mindestens 3 Gigabyte. Gleiche Werte für Minimum und Maximum können Ruckler reduzieren."
+memoryTotalTitle = "Gesamt"
+memoryAvailableTitle = "Verfügbar"
+javaExecutableTitle = "Java-Programm"
+javaExecSelDialogTitle = "Java-Programm auswählen"
+javaExecSelButtonText = "Datei wählen"
+javaExecDesc = "Das Java-Programm wird vor dem Spielstart geprüft."
+javaPathDesc = "Der Pfad sollte mit <strong>{pathSuffix}</strong> enden."
+jvmOptsTitle = "Zusätzliche JVM-Optionen"
+jvmOptsDesc = "Optionen, die beim Start an die JVM übergeben werden. <em>-Xms</em> und <em>-Xmx</em> gehören nicht hierher."
+launcherTabHeaderText = "Launcher-Einstellungen"
+launcherTabHeaderDesc = "Optionen für den Launcher selbst."
+allowPrereleaseTitle = "Vorabversionen erlauben."
+allowPrereleaseDesc = "Vorabversionen enthalten neue Funktionen, die eventuell noch nicht vollständig getestet sind.<br>Wenn du bereits eine Vorabversion nutzt, ist das immer aktiv."
+dataDirectoryTitle = "Datenordner"
+selectDataDirectory = "Datenordner auswählen"
+chooseFolder = "Ordner wählen"
+dataDirectoryDesc = "Alle Spieldateien und lokalen Java-Installationen werden im Datenordner gespeichert.<br>Screenshots und Welten liegen im Instanzordner des jeweiligen Servers."
+aboutTabHeaderText = "Über"
+aboutTabHeaderDesc = "Informationen und Versionshinweise zur aktuellen Version."
+aboutTitle = "{appName}"
+stableRelease = "Stabile Version"
+versionText = "Version "
+sourceGithub = "Quellcode (GitHub)"
+support = "Support"
+devToolsConsole = "DevTools-Konsole"
+releaseNotes = "Versionshinweise"
+changelog = "Änderungen"
+noReleaseNotes = "Keine Versionshinweise"
+viewReleaseNotes = "Versionshinweise ansehen"
+launcherUpdatesHeaderText = "Launcher-Updates"
+launcherUpdatesHeaderDesc = "Updates für den Launcher herunterladen, installieren und ansehen."
+checkForUpdates = "Nach Updates suchen"
+whatsNew = "Was ist neu"
+updateReleaseNotes = "Versionshinweise zum Update"
+
+[ejs.waiting]
+waitingText = "Warte auf Microsoft.."
+
+[ejs.welcome]
+continueButton = "WEITER"
+
+
+[js.discord]
+waiting = "Warte auf das Spiel.."
+state = "Server: {shortId}"
+
+[js.index]
+microsoftLoginTitle = "Microsoft-Anmeldung"
+microsoftLogoutTitle = "Microsoft-Abmeldung"
+
+[js.login]
+login = "ANMELDEN"
+loggingIn = "WIRD ANGEMELDET"
+success = "ERFOLGREICH"
+tryAgain = "Erneut versuchen"
+
+[js.login.error]
+invalidValue = "* Ungültiger Wert"
+requiredValue = "* Erforderlich"
+
+[js.login.error.unknown]
+title = "Unbekannter Fehler bei der Anmeldung"
+desc = "Ein unbekannter Fehler ist aufgetreten. Details findest du in der Konsole."
+
+[js.landing.launch]
+pleaseWait = "Bitte warten.."
+failureTitle = "Fehler beim Start"
+failureText = "Details findest du in der Konsole (STRG + Umschalt + I)."
+okay = "Okay"
+
+[js.landing.selectedAccount]
+noAccountSelected = "Kein Account ausgewählt"
+
+[js.landing.selectedServer]
+noSelection = "Kein Server ausgewählt"
+loading = "Lädt.."
+
+[js.landing.serverStatus]
+server = "SERVER"
+offline = "OFFLINE"
+players = "SPIELER"
+
+[js.landing.systemScan]
+checking = "System wird geprüft.."
+noCompatibleJava = "Keine passende<br>Java-Installation gefunden"
+installJavaMessage = "Um Minecraft zu starten, brauchst du eine 64-Bit-Installation von Java {major}. Sollen wir sie für dich installieren?"
+installJava = "Java installieren"
+installJavaManually = "Selbst installieren"
+javaDownloadPrepare = "Java-Download wird vorbereitet.."
+javaDownloadFailureTitle = "Fehler beim Java-Download"
+javaDownloadFailureText = "Details findest du in der Konsole (STRG + Umschalt + I)."
+javaRequired = "Java wird<br>zum Starten benötigt"
+javaRequiredMessage = "Zum Starten wird eine gültige 64-Bit-Installation von Java {major} benötigt.<br><br>Installiere Java {major} (z. B. von <a href=\"https://adoptium.net/\">adoptium.net</a>) und starte den Launcher neu."
+javaRequiredDismiss = "Verstanden"
+javaRequiredCancel = "Zurück"
+
+[js.landing.downloadJava]
+findJdkFailure = "Keine passende OpenJDK-Version gefunden."
+javaDownloadCorruptedError = "Das heruntergeladene JDK ist fehlerhaft, die Datei ist eventuell beschädigt."
+extractingJava = "Java wird entpackt"
+javaInstalled = "Java installiert!"
+
+[js.landing.dlAsync]
+loadingServerInfo = "Serverinformationen werden geladen.."
+fatalError = "Schwerwiegender Fehler"
+unableToLoadDistributionIndex = "Die Serverliste konnte nicht geladen werden. Details findest du in der Konsole (STRG + Umschalt + I)."
+pleaseWait = "Bitte warten.."
+errorDuringLaunchTitle = "Fehler beim Start"
+seeConsoleForDetails = "Details findest du in der Konsole (STRG + Umschalt + I)."
+validatingFileIntegrity = "Dateien werden geprüft.."
+errorDuringFileVerificationTitle = "Fehler bei der Dateiprüfung"
+downloadingFiles = "Dateien werden heruntergeladen.."
+errorDuringFileDownloadTitle = "Fehler beim Herunterladen"
+preparingToLaunch = "Start wird vorbereitet.."
+launchingGame = "Spiel wird gestartet.."
+launchWrapperNotDownloaded = "Die Hauptdatei (LaunchWrapper) konnte nicht richtig heruntergeladen werden, deshalb kann das Spiel nicht starten.<br><br>Deaktiviere vorübergehend dein Antivirenprogramm und starte das Spiel erneut."
+doneEnjoyServer = "Fertig. Viel Spaß auf dem Server!"
+checkConsoleForDetails = "Details findest du in der Konsole (STRG + Umschalt + I)."
+
+[js.landing.news]
+checking = "Suche nach News"
+
+[js.landing.discord]
+loading = "Spiel wird geladen.."
+joining = "Verbindet mit dem Server!"
+joined = "Spielt auf dem Server!"
+
+[js.overlay]
+dismiss = "Schließen"
+
+[js.settings.fileSelectors]
+executables = "Programme"
+allFiles = "Alle Dateien"
+
+[js.settings.mstfLogin]
+errorTitle = "Etwas ist schiefgelaufen"
+errorMessage = "Die Microsoft-Anmeldung ist fehlgeschlagen. Bitte versuche es erneut."
+okButton = "OK"
+
+[js.settings.mstfLogout]
+errorTitle = "Etwas ist schiefgelaufen"
+errorMessage = "Die Microsoft-Abmeldung ist fehlgeschlagen. Bitte versuche es erneut."
+okButton = "OK"
+
+[js.settings.authAccountSelect]
+selectButton = "Account auswählen"
+selectedButton = "Ausgewählt &#10004;"
+
+[js.settings.authAccountLogout]
+lastAccountWarningTitle = "Achtung<br>Das ist dein letzter Account"
+lastAccountWarningMessage = "Um den Launcher zu nutzen, musst du mit mindestens einem Account angemeldet sein. Danach musst du dich erneut anmelden.<br><br>Möchtest du dich wirklich abmelden?"
+confirmButton = "Ja, abmelden"
+cancelButton = "Abbrechen"
+
+[js.settings.authAccountPopulate]
+username = "Benutzername"
+uuid = "UUID"
+selectAccount = "Account auswählen"
+selectedAccount = "Ausgewählt ✓"
+logout = "Abmelden"
+
+[js.settings.dropinMods]
+removeButton = "Entfernen"
+deleteFailedTitle = "Mod {fullName}<br>konnte nicht gelöscht werden"
+deleteFailedMessage = "Stelle sicher, dass die Datei nicht verwendet wird, und versuche es erneut."
+failedToggleTitle = "Ein oder mehrere Mods<br>konnten nicht umgeschaltet werden"
+okButton = "Okay"
+
+[js.settings.serverListing]
+mainServer = "Hauptserver"
+
+[js.settings.java]
+selectedJava = "Ausgewählt: Java {version} ({vendor})"
+invalidSelection = "Ungültige Auswahl"
+requiresJava = "Benötigt Java {major} (64-Bit)."
+availableOptions = "Verfügbare Optionen für Java {major} (HotSpot VM)"
+
+[js.settings.about]
+preReleaseTitle = "Vorabversion"
+stableReleaseTitle = "Stabile Version"
+releaseNotesFailed = "Versionshinweise konnten nicht geladen werden."
+
+[js.settings.updates]
+newReleaseTitle = "Neue Version verfügbar"
+newPreReleaseTitle = "Neue Vorabversion verfügbar"
+downloadingButton = "Wird heruntergeladen.."
+downloadButton = 'Herunterladen<span style="font-size: 10px;color: gray;text-shadow: none !important;">Schließe den Launcher und öffne die DMG-Datei, um zu aktualisieren.</span>'
+latestVersionTitle = "Du nutzt die neueste Version"
+checkForUpdatesButton = "Nach Updates suchen"
+checkingForUpdatesButton = "Suche nach Updates.."
+
+[js.settings.msftLogin]
+errorTitle = "Microsoft-Anmeldung fehlgeschlagen"
+errorMessage = "Dein Microsoft-Account konnte nicht angemeldet werden. Bitte versuche es erneut."
+okButton = "OK"
+
+[js.uibinder.startup]
+fatalErrorTitle = "Schwerwiegender Fehler: Serverliste nicht verfügbar"
+fatalErrorMessage = "Die Serverliste konnte nicht heruntergeladen werden, und es ist keine lokale Kopie vorhanden.<br><br>Ohne sie kann der Launcher nicht starten. Prüfe deine Internetverbindung und starte den Launcher neu."
+closeButton = "Schließen"
+
+[js.uibinder.validateAccount]
+failedMessageTitle = "Anmeldung abgelaufen"
+failedMessage = "Die Anmeldung für <strong>{account}</strong> konnte nicht erneuert werden. Wähle einen anderen Account oder melde dich erneut an."
+failedMessageSelectAnotherAccount = "Die Anmeldung für <strong>{account}</strong> konnte nicht erneuert werden. Bitte melde dich erneut an."
+loginButton = "Anmelden"
+selectAnotherAccountButton = "Anderen Account wählen"
+
+[js.uicore.autoUpdate]
+checkingForUpdateButton = "Suche nach Updates..."
+installNowButton = "Jetzt installieren"
+checkForUpdatesButton = "Nach Updates suchen"
+
+[js.auth.microsoft.error]
+noProfileTitle = "Fehler bei der Anmeldung:<br>Kein Profil eingerichtet"
+noProfileDesc = "Dein Microsoft-Account hat noch kein Minecraft-Profil. Wenn du das Spiel gerade gekauft oder über den Xbox Game Pass erhalten hast, richte dein Profil auf <a href=\"https://minecraft.net/\">Minecraft.net</a> ein.<br><br>Falls du das Spiel noch nicht besitzt, kannst du es ebenfalls auf <a href=\"https://minecraft.net/\">Minecraft.net</a> kaufen."
+noXboxAccountTitle = "Fehler bei der Anmeldung:<br>Kein Xbox-Account"
+noXboxAccountDesc = "Mit deinem Microsoft-Account ist kein Xbox-Account verknüpft."
+xblBannedTitle = "Fehler bei der Anmeldung:<br>Xbox Live nicht verfügbar"
+xblBannedDesc = "Dein Microsoft-Account stammt aus einem Land, in dem Xbox Live nicht verfügbar ist."
+under18Title = "Fehler bei der Anmeldung:<br>Zustimmung der Eltern nötig"
+under18Desc = "Accounts von Nutzern unter 18 Jahren müssen von einem Erwachsenen zu einer Familie hinzugefügt werden."
+unknownTitle = "Unbekannter Fehler bei der Anmeldung"
+unknownDesc = "Ein unbekannter Fehler ist aufgetreten. Details findest du in der Konsole."
+
+[js.auth.mojang.error]
+methodNotAllowedTitle = "Interner Fehler:<br>Methode nicht erlaubt"
+methodNotAllowedDesc = "Methode nicht erlaubt. Bitte melde diesen Fehler."
+notFoundTitle = "Interner Fehler:<br>Nicht gefunden"
+notFoundDesc = "Der Anmeldeserver wurde nicht gefunden. Bitte melde diesen Fehler."
+accountMigratedTitle = "Fehler bei der Anmeldung:<br>Account migriert"
+accountMigratedDesc = "Dieser Account wurde migriert. Melde dich mit der E-Mail-Adresse des Accounts an."
+invalidCredentialsTitle = "Fehler bei der Anmeldung:<br>Falsche Zugangsdaten"
+invalidCredentialsDesc = "E-Mail oder Passwort ist falsch. Bitte versuche es erneut."
+tooManyAttemptsTitle = "Fehler bei der Anmeldung:<br>Zu viele Versuche"
+tooManyAttemptsDesc = "Mit diesem Account gab es zuletzt zu viele Anmeldeversuche. Bitte versuche es später erneut."
+invalidTokenTitle = "Fehler bei der Anmeldung:<br>Ungültiges Token"
+invalidTokenDesc = "Das Zugriffstoken ist ungültig."
+tokenHasProfileTitle = "Fehler bei der Anmeldung:<br>Token hat bereits ein Profil"
+tokenHasProfileDesc = "Dem Zugriffstoken ist bereits ein Profil zugewiesen. Profilauswahl wird noch nicht unterstützt."
+credentialsMissingTitle = "Fehler bei der Anmeldung:<br>Zugangsdaten fehlen"
+credentialsMissingDesc = "Benutzername oder Passwort fehlt, oder das Passwort ist kürzer als 3 Zeichen."
+invalidSaltVersionTitle = "Fehler bei der Anmeldung:<br>Ungültige Salt-Version"
+invalidSaltVersionDesc = "Ungültige Salt-Version."
+unsupportedMediaTypeTitle = "Interner Fehler:<br>Medientyp nicht unterstützt"
+unsupportedMediaTypeDesc = "Medientyp nicht unterstützt. Bitte melde diesen Fehler."
+accountGoneTitle = "Fehler bei der Anmeldung:<br>Account migriert"
+accountGoneDesc = "Der Account wurde zu einem Microsoft-Account migriert. Bitte melde dich mit Microsoft an."
+unreachableTitle = "Fehler bei der Anmeldung:<br>Nicht erreichbar"
+unreachableDesc = "Die Anmeldeserver sind nicht erreichbar. Prüfe, ob sie online sind und du mit dem Internet verbunden bist."
+gameNotPurchasedTitle = "Fehler bei der Anmeldung:<br>Spiel nicht gekauft"
+gameNotPurchasedDesc = "Mit diesem Account wurde Minecraft nicht gekauft. Du kannst es auf <a href=\"https://minecraft.net/\">Minecraft.net</a> kaufen."
+unknownErrorTitle = "Unbekannter Fehler bei der Anmeldung"
+unknownErrorDesc = "Ein unbekannter Fehler ist aufgetreten. Details findest du in der Konsole."
