@@ -40,6 +40,8 @@ const user_text               = document.getElementById('user_text')
 
 const loggerLanding = LoggerUtil.getLogger('Landing')
 
+document.getElementById('landingVersion').textContent = `v${remote.app.getVersion()}`
+
 /* Launch Progress Wrapper Functions */
 
 /**

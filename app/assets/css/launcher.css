@@ -4544,6 +4544,18 @@ input:checked + .toggleSwitchSlider:before {
     right: 24px;
     z-index: 2;
 }
+/* Launcher version, bottom right. */
+#landingVersion {
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    z-index: 2;
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: .6;
+    pointer-events: none;
+    user-select: none;
+}
 #landingAccount #user_content {
     gap: 8px;
     height: 34px;
