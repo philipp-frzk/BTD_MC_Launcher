@@ -213,7 +213,8 @@ async function buildPackFileModules(packFiles){
 
 /**
  * The modpack's override files (config/, servers.dat, ...), copied to distro/output/files/ to be hosted next to
- * distribution.json. client-overrides/ wins over overrides/. options.txt is left out so players keep their own settings.
+ * distribution.json. client-overrides/ wins over overrides/. options.txt is left out so players keep their own settings,
+ * and empty files are left out because GitHub can't host them.
  */
 function buildOverrideModules(zip, baseUrl){
     const byPath = new Map()
@@ -234,6 +235,11 @@ function buildOverrideModules(zip, baseUrl){
     const modules = []
     for(const [relPath, entry] of [...byPath].sort(([a], [b]) => a.localeCompare(b))){
         const buf = entry.getData()
+        if(buf.length === 0){
+            // GitHub rejects empty release assets, and the mods recreate these placeholder files themselves.
+            console.log(`  ${relPath} (empty, skipped)`)
+            continue
+        }
         const outFile = path.join(OUTPUT_DIR, 'files', ...relPath.split('/'))
         fs.mkdirSync(path.dirname(outFile), { recursive: true })
         fs.writeFileSync(outFile, buf)
