@@ -4,8 +4,8 @@
         "id": "btd",
         "name": "Business To Do Minecraft Vanilla",
         "description": "Vanilla+ Survival. Der Launcher installiert und aktualisiert die freigegebenen Client-Mods für dich.",
-        "address": "YOUR-SERVER.g-portal.game:25565",
-        "paidUntil": "2026-10-12",
+        "address": "eu8788612.g-portal.game",
+        "paidUntil": "2026-11-13",
         "autoconnect": true
     }
 }
