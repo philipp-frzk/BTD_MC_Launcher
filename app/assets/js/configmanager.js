@@ -535,14 +535,26 @@ function defaultJavaConfig17(ram) {
         maxRAM: resolveSelectedRAM(ram),
         executable: null,
         jvmOptions: [
-            '-XX:+UnlockExperimentalVMOptions',
-            '-XX:+UseG1GC',
-            '-XX:G1NewSizePercent=20',
-            '-XX:G1ReservePercent=20',
-            '-XX:MaxGCPauseMillis=50',
-            '-XX:G1HeapRegionSize=32M'
+            '-XX:+UseZGC'
         ],
     }
+}
+
+/**
+ * Replace any other garbage collector flags with ZGC. Selecting more than one
+ * collector prevents the JVM from starting, so G1 options from older configs
+ * are removed.
+ *
+ * @param {Array.<string>} jvmOptions The saved JVM options.
+ * @returns {Array.<string>} The JVM options using ZGC.
+ */
+function enforceZGC(jvmOptions) {
+    if(jvmOptions.includes('-XX:+UseZGC')) {
+        return jvmOptions
+    }
+    return jvmOptions
+        .filter(opt => !/^-XX:[+-]Use\w*GC$/.test(opt) && !/^-XX:G1/.test(opt))
+        .concat('-XX:+UseZGC')
 }
 
 /**
@@ -554,6 +566,9 @@ function defaultJavaConfig17(ram) {
 exports.ensureJavaConfig = function(serverid, effectiveJavaOptions, ram) {
     if(!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
         config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram)
+    } else if(effectiveJavaOptions.suggestedMajor > 8) {
+        const javaConfig = config.javaConfig[serverid]
+        javaConfig.jvmOptions = enforceZGC(javaConfig.jvmOptions)
     }
 }
 
